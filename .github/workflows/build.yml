@@ -49,7 +49,6 @@ jobs:
   build-ipa:
     name: Build iOS App
     runs-on: macos-latest
-    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,20 +72,21 @@ jobs:
       - name: Build iOS Release (No Codesign)
         run: flutter build ios --release --no-codesign
 
-      - name: Compress iOS App
+      - name: Create IPA Package
         run: |
-          cd build/ios/iphoneos
-          zip -r Runner.app.zip Runner.app
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r buzdolabinda-ne-var-ios.ipa Payload
 
-      - name: Upload iOS App Artifact
+      - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: buzdolabinda-ne-var-ios-app
-          path: build/ios/iphoneos/Runner.app.zip
+          name: buzdolabinda-ne-var-ipa
+          path: buzdolabinda-ne-var-ios.ipa
 
   create-release:
     name: Create GitHub Release
-    needs: [build-apk]
+    needs: [build-apk, build-ipa]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -100,6 +100,12 @@ jobs:
           name: buzdolabinda-ne-var-apk
           path: build-artifacts
 
+      - name: Download IPA Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-ipa
+          path: build-artifacts
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -109,6 +115,7 @@ jobs:
             🌸 **Buzdolabında Ne Var? (Evde Tarif & Malzeme Eşleştirici)**
             - 200 Popüler Türkçe Yemek Tarifi
             - Kawaii & Pastel Mutfak Arayüzü
-            - Android APK İndirme Bağlantısı Dahil!
+            - Android APK ve iOS IPA İndirme Bağlantıları Dahil!
           files: |
             build-artifacts/app-release.apk
+            build-artifacts/buzdolabinda-ne-var-ios.ipa
