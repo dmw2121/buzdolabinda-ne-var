@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
-import 'views/home_screen.dart';
+import 'views/onboarding_screen.dart';
+import 'views/main_shell.dart';
 
 void main() {
-  runApp(const KawaiiKitchenApp());
+  runApp(const BuzdolabimApp());
 }
 
 // ==========================================
-// 🎨 KAWAII COLOR PALETTE & DESIGN TOKENS
+// KAWAII COLOR PALETTE
 // ==========================================
 class KawaiiColors {
-  static const Color peach = Color(0xFFFF9EAA); // Dominant Peach Pink
-  static const Color mint = Color(0xFFA2E9C1); // Secondary Soft Mint Green
-  static const Color butter = Color(0xFFFFF3DA); // Butter Yellow
-  static const Color lavender = Color(0xFFD0BFFF); // Sweet Lavender
-  static const Color creamBg = Color(0xFFFFFBF5); // Milk Foam Cream Background
-  static const Color cardBorder = Color(0xFFFFC0CB); // Soft Pink Border
-  static const Color textDark = Color(0xFF4A3E3D); // Soft Warm Dark Brown/Text
-  static const Color textMuted = Color(0xFF8C7A78); // Muted Dark Brown
-  static const Color coral = Color(0xFFFF6B81); // Bright Accent Coral
-  static const Color lightMint = Color(0xFFE8FAEF); // Light Mint Tint
-  static const Color lightYellow = Color(0xFFFFF9E6); // Light Yellow Tint
+  static const Color peach = Color(0xFFFF9EAA);
+  static const Color mint = Color(0xFFA2E9C1);
+  static const Color butter = Color(0xFFFFF3DA);
+  static const Color lavender = Color(0xFFD0BFFF);
+  static const Color creamBg = Color(0xFFFFFBF5);
+  static const Color cardBorder = Color(0xFFFFC0CB);
+  static const Color textDark = Color(0xFF4A3E3D);
+  static const Color textMuted = Color(0xFF8C7A78);
+  static const Color coral = Color(0xFFFF6B81);
+  static const Color lightMint = Color(0xFFE8FAEF);
+  static const Color lightYellow = Color(0xFFFFF9E6);
 }
 
-class KawaiiKitchenApp extends StatelessWidget {
-  const KawaiiKitchenApp({super.key});
+class BuzdolabimApp extends StatefulWidget {
+  const BuzdolabimApp({super.key});
+
+  @override
+  State<BuzdolabimApp> createState() => _BuzdolabimAppState();
+}
+
+class _BuzdolabimAppState extends State<BuzdolabimApp> {
+  bool _onboardingDone = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Buzdolabında Ne Var?',
+      title: 'Buzdolabımdan Yemek Tarifleri',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -39,9 +47,16 @@ class KawaiiKitchenApp extends StatelessWidget {
           secondary: KawaiiColors.mint,
           surface: Colors.white,
         ),
-        fontFamily: 'sans-serif',
       ),
-      home: const HomeScreen(),
+      home: _onboardingDone
+          ? const MainShell()
+          : OnboardingScreen(
+              onDone: () {
+                setState(() {
+                  _onboardingDone = true;
+                });
+              },
+            ),
     );
   }
 }

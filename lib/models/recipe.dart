@@ -36,7 +36,7 @@ class Recipe {
   final List<String> ingredientsText;
   final List<Ingredient> requiredIngredients;
   final List<String> steps;
-  final String chefTip;
+  final String? chefTip;
 
   const Recipe({
     required this.id,
@@ -51,6 +51,7 @@ class Recipe {
     required this.ingredientsText,
     required this.requiredIngredients,
     required this.steps,
-    required this.chefTip,
+    this.chefTip,
   });
 }
+
