@@ -42,6 +42,7 @@ class _MainShellState extends State<MainShell> {
     final screens = [
       HomeScreen(
         selectedIngredientIds: _selectedIngredientIds,
+        onOpenFridge: () => setState(() => _currentIndex = 1),
       ),
       FridgeScreen(
         selectedIngredientIds: _selectedIngredientIds,

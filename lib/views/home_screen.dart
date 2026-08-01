@@ -6,10 +6,12 @@ import 'recipe_detail_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   final Set<String> selectedIngredientIds;
+  final VoidCallback? onOpenFridge;
 
   const HomeScreen({
     super.key,
     required this.selectedIngredientIds,
+    this.onOpenFridge,
   });
 
   @override
@@ -210,27 +212,39 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        // Ingredient count badge
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: KawaiiColors.mint.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: KawaiiColors.mint, width: 1.5),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('🧊 ', style: TextStyle(fontSize: 13)),
-              Text(
-                '$selectedCount',
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w800,
-                  color: KawaiiColors.textDark,
+        // Ingredient count badge (tappable to open Fridge)
+        GestureDetector(
+          onTap: widget.onOpenFridge,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: KawaiiColors.mint.withOpacity(0.25),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: KawaiiColors.mint, width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: KawaiiColors.mint.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('🧊 ', style: TextStyle(fontSize: 14)),
+                Text(
+                  '$selectedCount',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: KawaiiColors.textDark,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Icon(Icons.add_circle_outline_rounded, size: 16, color: KawaiiColors.coral),
+              ],
+            ),
           ),
         ),
       ],

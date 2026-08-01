@@ -36,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: 'Tarifinizi Seçin\nve Pişirin!',
       subtitle: 'Eşleşen tariflere tıklayıp\nölçülü malzeme listesi ve\nadım adım yapılışı görün.\nAfiyet olsun! ✨',
       bgColor: Color(0xFFFFFAF0),
-      accentColor: KawaiiColors.butter,
+      accentColor: KawaiiColors.coral,
     ),
   ];
 
@@ -99,7 +99,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _pages[_currentPage].accentColor,
                         foregroundColor: Colors.white,
-                        elevation: 0,
+                        elevation: 4,
+                        shadowColor: _pages[_currentPage].accentColor.withOpacity(0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
                         ),

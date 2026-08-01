@@ -197,21 +197,7 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                                 const SizedBox(height: 14),
 
                                 if (recipe.ingredientsText.isNotEmpty) ...[
-                                  ...recipe.ingredientsText.take(20).map((text) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 6),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('• ', style: TextStyle(fontSize: 14, color: KawaiiColors.peach, fontWeight: FontWeight.bold)),
-                                        Expanded(
-                                          child: Text(
-                                            text,
-                                            style: const TextStyle(fontSize: 13, color: KawaiiColors.textDark, height: 1.4),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
+                                  ...recipe.ingredientsText.map((text) => _buildIngredientItem(text, recipe)),
                                 ] else ...[
                                   // Fallback: show ingredient tags
                                   if (availableTags.isNotEmpty) ...[
@@ -406,6 +392,105 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
         ],
       ),
     );
+  }
+
+  Widget _buildIngredientItem(String rawText, Recipe recipe) {
+    final cleanText = rawText.replaceAll(RegExp(r'^[•\-\*\s]+'), '').trim();
+    final lowerText = cleanText.toLowerCase();
+
+    bool isMissing = false;
+
+    for (var ing in recipe.requiredIngredients) {
+      if (lowerText.contains(ing.name.toLowerCase()) || _ingMatchesText(ing.id, lowerText)) {
+        if (!widget.selectedIngredientIds.contains(ing.id)) {
+          isMissing = true;
+          break;
+        }
+      }
+    }
+
+    final isAvailable = !isMissing;
+
+    final Color bgColor = isAvailable ? const Color(0xFFF1FDF5) : const Color(0xFFFFF0F2);
+    final Color borderColor = isAvailable ? KawaiiColors.mint : const Color(0xFFFFCDD2);
+    final Color textColor = isAvailable ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C);
+    final String statusIcon = isAvailable ? '✅' : '❌';
+    final String statusLabel = isAvailable ? 'Var' : 'Eksik';
+    final Color badgeBg = isAvailable ? const Color(0xFFDCFCE7) : const Color(0xFFFFE4E6);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: borderColor, width: 1.2),
+      ),
+      child: Row(
+        children: [
+          Text(statusIcon, style: const TextStyle(fontSize: 13)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              cleanText,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: KawaiiColors.textDark,
+                height: 1.3,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: badgeBg,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor, width: 0.8),
+            ),
+            child: Text(
+              statusLabel,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: textColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool _ingMatchesText(String id, String t) {
+    switch (id) {
+      case 'sut': return t.contains('süt');
+      case 'un': return t.contains('un');
+      case 'seker': return t.contains('şeker');
+      case 'yumurta': return t.contains('yumurta');
+      case 'tereyagi': return t.contains('tereyağ') || t.contains('margarin');
+      case 'siviyag': return t.contains('sıvı yağ') || t.contains('sıvıyağ') || t.contains('ayçiçek');
+      case 'kabartma_tozu': return t.contains('kabartma') || t.contains('karbonat');
+      case 'tuz': return t.contains('tuz');
+      case 'biber': return t.contains('biber') && !t.contains('pul');
+      case 'pulbiber': return t.contains('pul');
+      case 'salca': return t.contains('salça');
+      case 'sogan': return t.contains('soğan');
+      case 'sarimsak': return t.contains('sarımsak');
+      case 'beyaz_peynir': return t.contains('peynir');
+      case 'kasar': return t.contains('kaşar');
+      case 'labne': return t.contains('labne');
+      case 'krema': return t.contains('krema');
+      case 'vanilya': return t.contains('vanilya') || t.contains('vanilin');
+      case 'maydanoz': return t.contains('maydanoz');
+      case 'bulgur': return t.contains('bulgur');
+      case 'mercimek': return t.contains('mercimek');
+      case 'biskuvi': return t.contains('bisküvi') || t.contains('kedi dili');
+      case 'fistik': return t.contains('fıstık') || t.contains('badem');
+      case 'limon': return t.contains('limon');
+      default: return false;
+    }
   }
 
   Widget _ingSection(String title, List<dynamic> items, Color bgColor, Color textColor) {
