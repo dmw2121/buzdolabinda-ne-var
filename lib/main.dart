@@ -1331,7 +1331,7 @@ class RecipeDetailSheet extends StatelessWidget {
     final missing = recipe.requiredIngredients.where((ing) => !selectedIngredientIds.contains(ing.id)).toList();
 
     return Container(
-      maxHeight: MediaQuery.of(context).size.height * 0.88,
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
       decoration: const BoxDecoration(
         color: KawaiiColors.creamBg,
         borderRadius: BorderRadius.vertical(top: Radius.circular(36.0)),

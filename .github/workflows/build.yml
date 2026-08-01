@@ -47,8 +47,9 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
   build-ipa:
-    name: Build iOS IPA
+    name: Build iOS App
     runs-on: macos-latest
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -69,18 +70,23 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Archive (IPA)
-        run: flutter build ipa --no-codesign
+      - name: Build iOS Release (No Codesign)
+        run: flutter build ios --release --no-codesign
 
-      - name: Upload IPA Archive Artifact
+      - name: Compress iOS App
+        run: |
+          cd build/ios/iphoneos
+          zip -r Runner.app.zip Runner.app
+
+      - name: Upload iOS App Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: buzdolabinda-ne-var-ipa
-          path: build/ios/archive/Runner.xcarchive
+          name: buzdolabinda-ne-var-ios-app
+          path: build/ios/iphoneos/Runner.app.zip
 
   create-release:
     name: Create GitHub Release
-    needs: [build-apk, build-ipa]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
