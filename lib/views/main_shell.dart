@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
-import '../models/ingredient.dart';
-import '../data/ingredients_data.dart';
 import 'home_screen.dart';
 import 'fridge_screen.dart';
 import 'fairy_screen.dart';
