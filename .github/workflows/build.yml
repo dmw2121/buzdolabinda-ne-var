@@ -1,0 +1,108 @@
+name: Flutter Build APK & IPA
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Initialize Flutter project platforms if needed
+        run: |
+          if [ ! -d "android" ]; then
+            flutter create --platforms=android,ios .
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  build-ipa:
+    name: Build iOS IPA
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Initialize Flutter project platforms if needed
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create --platforms=android,ios .
+          fi
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS Archive (IPA)
+        run: flutter build ipa --no-codesign
+
+      - name: Upload IPA Archive Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-ipa
+          path: build/ios/archive/Runner.xcarchive
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build-apk, build-ipa]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-apk
+          path: build-artifacts
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-${{ github.run_number }}
+          name: "Buzdolabında Ne Var? v1.0.0 (Build ${{ github.run_number }})"
+          body: |
+            🌸 **Buzdolabında Ne Var? (Evde Tarif & Malzeme Eşleştirici)**
+            - 200 Popüler Türkçe Yemek Tarifi
+            - Kawaii & Pastel Mutfak Arayüzü
+            - Android APK İndirme Bağlantısı Dahil!
+          files: |
+            build-artifacts/app-release.apk
