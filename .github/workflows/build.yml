@@ -28,10 +28,10 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Initialize Flutter project platforms if needed
+      - name: Initialize Flutter project platforms
         run: |
           if [ ! -d "android" ]; then
-            flutter create --platforms=android,ios .
+            flutter create --project-name buzdolabinda_ne_var --platforms=android,ios .
           fi
 
       - name: Install dependencies
@@ -60,10 +60,10 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Initialize Flutter project platforms if needed
+      - name: Initialize Flutter project platforms
         run: |
           if [ ! -d "ios" ]; then
-            flutter create --platforms=android,ios .
+            flutter create --project-name buzdolabinda_ne_var --platforms=android,ios .
           fi
 
       - name: Install dependencies
