@@ -808,23 +808,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.0),
-                      child: recipe.imageUrl != null
-                          ? Image.network(
-                              recipe.imageUrl!,
+                      child: recipe.imageAsset != null
+                          ? Image.asset(
+                              recipe.imageAsset!,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) => Center(
                                 child: Text(recipe.emoji, style: const TextStyle(fontSize: 32)),
                               ),
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: Text(recipe.emoji, style: const TextStyle(fontSize: 32)),
-                                );
-                              },
                             )
-                          : Center(
-                              child: Text(recipe.emoji, style: const TextStyle(fontSize: 32)),
-                            ),
+                          : (recipe.imageUrl != null
+                              ? Image.network(
+                                  recipe.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Center(
+                                    child: Text(recipe.emoji, style: const TextStyle(fontSize: 32)),
+                                  ),
+                                )
+                              : Center(
+                                  child: Text(recipe.emoji, style: const TextStyle(fontSize: 32)),
+                                )),
                     ),
                   ),
                   const SizedBox(width: 14),

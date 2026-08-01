@@ -56,13 +56,19 @@ class RecipeDetailSheet extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(26.0),
-                            child: recipe.imageUrl != null
-                                ? Image.network(
-                                    recipe.imageUrl!,
+                            child: recipe.imageAsset != null
+                                ? Image.asset(
+                                    recipe.imageAsset!,
                                     fit: BoxFit.cover,
                                     errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 48))),
                                   )
-                                : Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 48))),
+                                : (recipe.imageUrl != null
+                                    ? Image.network(
+                                        recipe.imageUrl!,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 48))),
+                                      )
+                                    : Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 48)))),
                           ),
                         ),
                         const SizedBox(height: 12),

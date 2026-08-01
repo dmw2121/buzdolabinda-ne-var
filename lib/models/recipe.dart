@@ -28,6 +28,7 @@ class Recipe {
   final String title;
   final String emoji;
   final String? imageUrl;
+  final String? imageAsset;
   final int prepTimeMinutes;
   final int difficultyStars; // 1, 2, 3
   final int calories;
@@ -42,6 +43,7 @@ class Recipe {
     required this.title,
     required this.emoji,
     this.imageUrl,
+    this.imageAsset,
     required this.prepTimeMinutes,
     required this.difficultyStars,
     required this.calories,
