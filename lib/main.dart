@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'views/onboarding_screen.dart';
-import 'views/main_shell.dart';
+import 'views/welcome_splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const BuzdolabimApp());
 }
 
@@ -31,7 +33,40 @@ class BuzdolabimApp extends StatefulWidget {
 }
 
 class _BuzdolabimAppState extends State<BuzdolabimApp> {
-  bool _onboardingDone = false;
+  bool _isLoading = true;
+  bool _seenOnboarding = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboardingStatus();
+  }
+
+  Future<void> _checkOnboardingStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final seen = prefs.getBool('seen_onboarding_v1') ?? false;
+      setState(() {
+        _seenOnboarding = seen;
+        _isLoading = false;
+      });
+    } catch (_) {
+      setState(() {
+        _seenOnboarding = false;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _completeOnboarding() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('seen_onboarding_v1', true);
+    } catch (_) {}
+    setState(() {
+      _seenOnboarding = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +83,18 @@ class _BuzdolabimAppState extends State<BuzdolabimApp> {
           surface: Colors.white,
         ),
       ),
-      home: _onboardingDone
-          ? const MainShell()
-          : OnboardingScreen(
-              onDone: () {
-                setState(() {
-                  _onboardingDone = true;
-                });
-              },
-            ),
+      home: _isLoading
+          ? const Scaffold(
+              backgroundColor: KawaiiColors.creamBg,
+              body: Center(
+                child: CircularProgressIndicator(color: KawaiiColors.coral),
+              ),
+            )
+          : (_seenOnboarding
+              ? const WelcomeSplashScreen()
+              : OnboardingScreen(
+                  onDone: _completeOnboarding,
+                )),
     );
   }
 }

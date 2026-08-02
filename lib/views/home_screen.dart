@@ -432,11 +432,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text('⭐' * recipe.difficultyStars, style: const TextStyle(fontSize: 11)),
-                        const SizedBox(width: 6),
                         Text(
-                          '${recipe.prepTimeMinutes}dk • ${recipe.calories}kcal',
-                          style: const TextStyle(fontSize: 11, color: KawaiiColors.textMuted),
+                          recipe.prepTimeMinutes <= 20
+                              ? '🕐'
+                              : (recipe.prepTimeMinutes <= 40 ? '🕑' : '🕒'),
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${recipe.prepTimeMinutes} dk • ${recipe.calories} kcal',
+                          style: const TextStyle(fontSize: 11, color: KawaiiColors.textMuted, fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),

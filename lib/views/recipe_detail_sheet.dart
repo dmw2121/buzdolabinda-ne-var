@@ -130,7 +130,14 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                       const SizedBox(width: 8),
                       _statChip('🔥', '${recipe.calories} kcal'),
                       const SizedBox(width: 8),
-                      _statChip('⭐', '★' * recipe.difficultyStars),
+                      _statChip(
+                        recipe.prepTimeMinutes <= 20
+                            ? '🕐'
+                            : (recipe.prepTimeMinutes <= 40 ? '🕑' : '🕒'),
+                        recipe.prepTimeMinutes <= 20
+                            ? 'Pratik (15-20 dk)'
+                            : (recipe.prepTimeMinutes <= 40 ? 'Orta (25-40 dk)' : 'Uzun (45+ dk)'),
+                      ),
                     ],
                   ),
 

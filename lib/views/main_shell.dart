@@ -51,6 +51,8 @@ class _MainShellState extends State<MainShell> {
       ),
       FairyScreen(
         selectedCount: _selectedIngredientIds.length,
+        selectedIngredientIds: _selectedIngredientIds,
+        onToggleIngredient: _toggleIngredient,
       ),
     ];
 
@@ -81,7 +83,7 @@ class _MainShellState extends State<MainShell> {
               children: [
                 _buildNavItem(0, Icons.restaurant_menu_rounded, '🍲', 'Tarifler'),
                 _buildNavItem(1, Icons.kitchen_rounded, '🧊', 'Dolabım'),
-                _buildNavItem(2, Icons.auto_awesome_rounded, '✨', 'Peri'),
+                _buildNavItem(2, Icons.soup_kitchen_rounded, '👨‍🍳', 'Yardımcı Şef'),
               ],
             ),
           ),
