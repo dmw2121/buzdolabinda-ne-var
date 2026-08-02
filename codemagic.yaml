@@ -7,14 +7,21 @@ workflows:
       flutter: stable
       xcode: latest
     scripts:
+      - name: Disable experimental Swift Package Manager
+        script: flutter config --no-enable-swift-package-manager
       - name: Install dependencies
         script: flutter pub get
       - name: Build Unsigned iOS Release
-        script: flutter build ios --release --no-codesign
+        script: flutter build ios --simulator --release --no-tree-shake-icons || flutter build ios --release --no-codesign --no-tree-shake-icons
       - name: Package IPA for Sideloadly / AltStore
         script: |
           mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            cp -R build/ios/iphoneos/Runner.app Payload/
+          elif [ -d "build/ios/iphonesimulator/Runner.app" ]; then
+            cp -R build/ios/iphonesimulator/Runner.app Payload/
+          fi
           zip -r buzdolabinda-ne-var-ios.ipa Payload
+          ls -lh buzdolabinda-ne-var-ios.ipa
     artifacts:
       - buzdolabinda-ne-var-ios.ipa
