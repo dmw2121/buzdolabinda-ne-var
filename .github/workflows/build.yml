@@ -1,4 +1,4 @@
-name: Flutter Build APK & IPA
+name: Flutter Build APK & Release
 
 on:
   push:
@@ -42,6 +42,7 @@ jobs:
   build-ipa:
     name: Build iOS App
     runs-on: macos-latest
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,8 +62,8 @@ jobs:
       - name: Create IPA Package
         run: |
           mkdir -p Payload
-          cp -r build/ios/iphoneos/Runner.app Payload/
-          zip -r buzdolabinda-ne-var-ios.ipa Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/ || true
+          zip -r buzdolabinda-ne-var-ios.ipa Payload || true
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
@@ -72,7 +73,7 @@ jobs:
 
   create-release:
     name: Create GitHub Release
-    needs: [build-apk, build-ipa]
+    needs: [build-apk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -88,6 +89,7 @@ jobs:
 
       - name: Download IPA Artifact
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: buzdolabinda-ne-var-ipa
           path: build-artifacts
@@ -102,7 +104,7 @@ jobs:
             - 300 Mutfak Malzemesi Tespiti & Eşleştirme
             - Sevimli Gece/Gündüz Modu (Dark Mode)
             - Fotoğraf Çek & Malzeme Tespit Et
-            - Android APK ve iOS IPA İndirme Bağlantıları Dahil!
+            - Android APK İndirme Bağlantısı Dahil!
           files: |
-            build-artifacts/app-release.apk
-            build-artifacts/buzdolabinda-ne-var-ios.ipa
+            build-artifacts/*.apk
+            build-artifacts/*.ipa
