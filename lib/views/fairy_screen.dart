@@ -238,7 +238,7 @@ class _FairyScreenState extends State<FairyScreen>
                         width: 100,
                         height: 100,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: KawaiiColors.getCardBg(context),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
@@ -258,9 +258,9 @@ class _FairyScreenState extends State<FairyScreen>
                       child: Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: KawaiiColors.getCardBg(context),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: KawaiiColors.cardBorder, width: 1.5),
+                          border: Border.all(color: KawaiiColors.getBorder(context), width: 1.5),
                           boxShadow: [
                             BoxShadow(
                               color: KawaiiColors.peach.withOpacity(0.15),
