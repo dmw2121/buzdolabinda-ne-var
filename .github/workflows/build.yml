@@ -56,19 +56,12 @@ jobs:
         run: flutter pub get
 
       - name: Build iOS App Framework
-        run: flutter build ios --release --no-codesign --no-tree-shake-icons || true
+        run: flutter build ios --simulator --release --no-tree-shake-icons
 
       - name: Package Unsigned IPA for Sideloading
         run: |
           mkdir -p Payload
-          if [ -d "build/ios/iphoneos/Runner.app" ]; then
-            cp -R build/ios/iphoneos/Runner.app Payload/
-          else
-            FOUND_APP=$(find . -name "Runner.app" -type d | head -n 1)
-            if [ -n "$FOUND_APP" ]; then
-              cp -R "$FOUND_APP" Payload/
-            fi
-          fi
+          cp -R build/ios/iphonesimulator/Runner.app Payload/
           zip -r buzdolabinda-ne-var-ios.ipa Payload
           ls -lh buzdolabinda-ne-var-ios.ipa
 
@@ -107,6 +100,7 @@ jobs:
           name: "Buzdolabında Ne Var? v1.0.0 (Build ${{ github.run_number }})"
           body: |
             🌸 **Buzdolabında Ne Var? (Evde Tarif & Malzeme Eşleştirici)**
+            - Kamera İzinleri Düzeltilmiş Son Sürüm
             - 300 Mutfak Malzemesi Tespiti & Eşleştirme
             - Sevimli Gece/Gündüz Modu (Dark Mode)
             - Fotoğraf Çek & Malzeme Tespit Et
