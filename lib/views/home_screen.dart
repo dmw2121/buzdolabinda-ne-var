@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final selectedCount = widget.selectedIngredientIds.length;
 
     return Scaffold(
-      backgroundColor: KawaiiColors.creamBg,
+      backgroundColor: KawaiiColors.getBg(context),
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),

@@ -196,7 +196,7 @@ class _FairyScreenState extends State<FairyScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF0F3),
+      backgroundColor: KawaiiColors.getBg(context),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

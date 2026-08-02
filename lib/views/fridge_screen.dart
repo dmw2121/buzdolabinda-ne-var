@@ -30,7 +30,7 @@ class _FridgeScreenState extends State<FridgeScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: KawaiiColors.creamBg,
+      backgroundColor: KawaiiColors.getBg(context),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

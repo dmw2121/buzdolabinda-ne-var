@@ -32,6 +32,26 @@ class KawaiiColors {
   static const Color darkCardBorder = Color(0xFF4A3B52);
   static const Color darkTextPrimary = Color(0xFFFFF0F5);
   static const Color darkTextMuted = Color(0xFFD4C3DB);
+
+  static Color getBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? darkBg : creamBg;
+  }
+
+  static Color getCardBg(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? darkCard : Colors.white;
+  }
+
+  static Color getBorder(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? darkCardBorder : cardBorder;
+  }
+
+  static Color getTextPrimary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? darkTextPrimary : textDark;
+  }
+
+  static Color getTextSecondary(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark ? darkTextMuted : textMuted;
+  }
 }
 
 class BuzdolabimApp extends StatefulWidget {

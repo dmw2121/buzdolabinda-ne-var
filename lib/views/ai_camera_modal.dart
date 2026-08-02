@@ -204,9 +204,9 @@ class _AiCameraModalState extends State<AiCameraModal> {
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.88,
       ),
-      decoration: const BoxDecoration(
-        color: KawaiiColors.creamBg,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(36.0)),
+      decoration: BoxDecoration(
+        color: KawaiiColors.getBg(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(36.0)),
       ),
       padding: const EdgeInsets.all(24.0),
       child: Column(
