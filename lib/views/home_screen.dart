@@ -132,10 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                 child: Text(
                   '${recipes.length} tarif bulundu',
-                  style: const TextStyle(
-                    fontSize: 13,
+                  style: TextStyle(fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: KawaiiColors.textMuted,
+                    color: KawaiiColors.getTextSecondary(context),
                   ),
                 ),
               ),
@@ -192,20 +191,20 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Buzdolabımdan',
                 style: TextStyle(
                   fontSize: 13,
-                  color: KawaiiColors.textMuted,
+                  color: KawaiiColors.getTextSecondary(context),
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const Text(
+              Text(
                 'Yemek Tarifleri',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
-                  color: KawaiiColors.textDark,
+                  color: KawaiiColors.getTextPrimary(context),
                   height: 1.1,
                 ),
               ),
@@ -263,10 +262,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Text('🧊 ', style: TextStyle(fontSize: 14)),
                 Text(
                   '$selectedCount',
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: TextStyle(fontSize: 14,
                     fontWeight: FontWeight.w800,
-                    color: KawaiiColors.textDark,
+                    color: KawaiiColors.getTextPrimary(context),
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -282,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildSearchBar() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: KawaiiColors.getCardBg(context),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: KawaiiColors.cardBorder, width: 1.5),
         boxShadow: [
@@ -301,9 +299,9 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: InputDecoration(
           hintText: 'Tarif veya malzeme ara… (600 tarif)',
           hintStyle: const TextStyle(fontSize: 13, color: KawaiiColors.textMuted),
-          prefixIcon: const Padding(
-            padding: EdgeInsets.only(left: 14, right: 8),
-            child: Icon(Icons.search_rounded, color: KawaiiColors.textMuted, size: 20),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 14, right: 8),
+            child: Icon(Icons.search_rounded, color: KawaiiColors.getTextSecondary(context), size: 20),
           ),
           prefixIconConstraints: const BoxConstraints(minWidth: 40),
           suffixIcon: _searchQuery.isNotEmpty
@@ -362,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
           duration: const Duration(milliseconds: 180),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? color : Colors.white,
+            color: isSelected ? color : KawaiiColors.getCardBg(context),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: isSelected ? color : KawaiiColors.cardBorder, width: 1.5),
             boxShadow: isSelected
@@ -374,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-              color: isSelected ? Colors.white : KawaiiColors.textMuted,
+              color: isSelected ? Colors.white : KawaiiColors.getTextSecondary(context),
             ),
           ),
         ),
@@ -393,7 +391,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: KawaiiColors.getCardBg(context),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: isFullMatch ? KawaiiColors.mint : KawaiiColors.cardBorder,
@@ -449,10 +447,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     Text(
                       recipe.title,
-                      style: const TextStyle(
-                        fontSize: 15,
+                      style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: KawaiiColors.textDark,
+                        color: KawaiiColors.getTextPrimary(context),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -469,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(width: 4),
                         Text(
                           '${recipe.prepTimeMinutes} dk • ${recipe.calories} kcal',
-                          style: const TextStyle(fontSize: 11, color: KawaiiColors.textMuted, fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 11, color: KawaiiColors.getTextSecondary(context), fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
@@ -584,7 +581,7 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: KawaiiColors.getCardBg(context),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: KawaiiColors.cardBorder, width: 1.5),
       ),

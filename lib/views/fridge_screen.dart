@@ -44,20 +44,19 @@ class _FridgeScreenState extends State<FridgeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Dolabımda Ne Var?',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
-                            color: KawaiiColors.textDark,
+                            color: KawaiiColors.getTextPrimary(context),
                           ),
                         ),
                         Text(
                           '$selectedCount malzeme seçildi ✨',
-                          style: const TextStyle(
-                            fontSize: 13,
+                          style: TextStyle(fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: KawaiiColors.textMuted,
+                            color: KawaiiColors.getTextSecondary(context),
                           ),
                         ),
                       ],
@@ -276,7 +275,7 @@ class _FridgeScreenState extends State<FridgeScreen> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                                color: KawaiiColors.textDark,
+                                color: KawaiiColors.getTextPrimary(context),
                               ),
                             ),
                             if (isSelected) ...[

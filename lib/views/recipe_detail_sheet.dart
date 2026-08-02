@@ -113,10 +113,10 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                   // TITLE + STATS
                   Text(
                     recipe.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w900,
-                      color: KawaiiColors.textDark,
+                      color: KawaiiColors.getTextPrimary(context),
                       height: 1.2,
                     ),
                   ),

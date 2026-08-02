@@ -207,12 +207,12 @@ class _FairyScreenState extends State<FairyScreen>
                 const SizedBox(height: 24),
 
                 // TITLE
-                const Text(
+                Text(
                   'Yardımcı Şef',
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.w900,
-                    color: KawaiiColors.textDark,
+                    color: KawaiiColors.getTextPrimary(context),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -276,16 +276,15 @@ class _FairyScreenState extends State<FairyScreen>
                               widget.selectedCount > 0
                                   ? 'Dolabınızda ${widget.selectedCount} malzeme seçili!'
                                   : 'Henüz dolabınıza malzeme eklemediniz!',
-                              style: const TextStyle(
-                                fontSize: 13,
+                              style: TextStyle(fontSize: 13,
                                 fontWeight: FontWeight.w900,
-                                color: KawaiiColors.textDark,
+                                color: KawaiiColors.getTextPrimary(context),
                               ),
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               'Fotoğraf çekin veya aşağıdaki malzemelere dokunarak dolabınızı doldurun!',
-                              style: TextStyle(fontSize: 11, color: KawaiiColors.textMuted, height: 1.3),
+                              style: TextStyle(fontSize: 11, color: KawaiiColors.getTextSecondary(context), height: 1.3),
                             ),
                           ],
                         ),
@@ -384,7 +383,7 @@ class _FairyScreenState extends State<FairyScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: KawaiiColors.getCardBg(context),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFFFFD1DC), width: 1.8),
         boxShadow: [
@@ -432,18 +431,16 @@ class _FairyScreenState extends State<FairyScreen>
           const SizedBox(height: 12),
           Text(
             tip['title']!,
-            style: const TextStyle(
-              fontSize: 14,
+            style: TextStyle(fontSize: 14,
               fontWeight: FontWeight.w800,
-              color: KawaiiColors.textDark,
+              color: KawaiiColors.getTextPrimary(context),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             tip['fact']!,
-            style: const TextStyle(
-              fontSize: 12.5,
-              color: KawaiiColors.textMuted,
+            style: TextStyle(fontSize: 12.5,
+              color: KawaiiColors.getTextSecondary(context),
               height: 1.4,
             ),
           ),
@@ -458,7 +455,7 @@ class _FairyScreenState extends State<FairyScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: KawaiiColors.getCardBg(context),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: KawaiiColors.cardBorder, width: 1.8),
         boxShadow: [
@@ -475,13 +472,13 @@ class _FairyScreenState extends State<FairyScreen>
           Row(
             children: [
               const Text('🌟 ', style: TextStyle(fontSize: 18)),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Bugünkü Yemek Tavsiyem',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w900,
-                    color: KawaiiColors.textDark,
+                    color: KawaiiColors.getTextPrimary(context),
                   ),
                 ),
               ),
@@ -532,10 +529,9 @@ class _FairyScreenState extends State<FairyScreen>
                   children: [
                     Text(
                       recipe.title,
-                      style: const TextStyle(
-                        fontSize: 15,
+                      style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: KawaiiColors.textDark,
+                        color: KawaiiColors.getTextPrimary(context),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -590,7 +586,7 @@ class _FairyScreenState extends State<FairyScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Text('🧺 ', style: TextStyle(fontSize: 18)),
               Expanded(
@@ -599,7 +595,7 @@ class _FairyScreenState extends State<FairyScreen>
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w900,
-                    color: KawaiiColors.textDark,
+                    color: KawaiiColors.getTextPrimary(context),
                   ),
                 ),
               ),
@@ -646,7 +642,7 @@ class _FairyScreenState extends State<FairyScreen>
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
-                          color: KawaiiColors.textDark,
+                          color: KawaiiColors.getTextPrimary(context),
                         ),
                       ),
                       const SizedBox(width: 4),

@@ -227,13 +227,13 @@ class _AiCameraModalState extends State<AiCameraModal> {
           Row(
             children: [
               const Text('📸 ', style: TextStyle(fontSize: 22)),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Fotoğraf Çek & Malzeme Tespit Et',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w900,
-                    color: KawaiiColors.textDark,
+                    color: KawaiiColors.getTextPrimary(context),
                   ),
                 ),
               ),
@@ -241,9 +241,9 @@ class _AiCameraModalState extends State<AiCameraModal> {
           ),
 
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'Buzdolabınızın fotoğrafını çekin, yapay zeka malzemeleri anında tespit etsin!',
-            style: TextStyle(fontSize: 12, color: KawaiiColors.textMuted),
+            style: TextStyle(fontSize: 12, color: KawaiiColors.getTextSecondary(context)),
           ),
 
           const SizedBox(height: 20),
