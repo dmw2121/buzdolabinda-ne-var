@@ -24,15 +24,8 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x'
           channel: 'stable'
           cache: true
-
-      - name: Initialize Flutter project platforms
-        run: |
-          if [ ! -d "android" ]; then
-            flutter create --project-name buzdolabinda_ne_var --platforms=android,ios .
-          fi
 
       - name: Install dependencies
         run: flutter pub get
@@ -56,15 +49,8 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x'
           channel: 'stable'
           cache: true
-
-      - name: Initialize Flutter project platforms
-        run: |
-          if [ ! -d "ios" ]; then
-            flutter create --project-name buzdolabinda_ne_var --platforms=android,ios .
-          fi
 
       - name: Install dependencies
         run: flutter pub get
@@ -113,8 +99,9 @@ jobs:
           name: "Buzdolabında Ne Var? v1.0.0 (Build ${{ github.run_number }})"
           body: |
             🌸 **Buzdolabında Ne Var? (Evde Tarif & Malzeme Eşleştirici)**
-            - 200 Popüler Türkçe Yemek Tarifi
-            - Kawaii & Pastel Mutfak Arayüzü
+            - 300 Mutfak Malzemesi Tespiti & Eşleştirme
+            - Sevimli Gece/Gündüz Modu (Dark Mode)
+            - Fotoğraf Çek & Malzeme Tespit Et
             - Android APK ve iOS IPA İndirme Bağlantıları Dahil!
           files: |
             build-artifacts/app-release.apk
