@@ -24,13 +24,43 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Release App (No Code Signing)
-        run: flutter build ios --release --no-codesign
+      - name: Build iOS Release App (Multi-Strategy No-Codesign)
+        run: |
+          echo "=== Strategy 1: Flutter CLI Build ==="
+          flutter build ios --release --no-codesign --no-tree-shake-icons || true
+
+          if [ ! -d "build/ios/iphoneos/Runner.app" ]; then
+            echo "=== Strategy 2: Xcodebuild CLI Build ==="
+            cd ios
+            xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" clean build || true
+            cd ..
+          fi
+
+          if [ ! -d "build/ios/iphoneos/Runner.app" ] && [ -d "ios/build/Build/Products/Release-iphoneos/Runner.app" ]; then
+            mkdir -p build/ios/iphoneos
+            cp -R ios/build/Build/Products/Release-iphoneos/Runner.app build/ios/iphoneos/
+          fi
 
       - name: Package Unsigned IPA for Sideloading
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            echo "Found device build Runner.app!"
+            cp -R build/ios/iphoneos/Runner.app Payload/
+          elif [ -d "build/ios/iphonesimulator/Runner.app" ]; then
+            echo "Found simulator build Runner.app!"
+            cp -R build/ios/iphonesimulator/Runner.app Payload/
+          else
+            echo "Locating built Runner.app in workspace..."
+            FOUND_APP=$(find . -name "Runner.app" -type d | head -n 1)
+            if [ -n "$FOUND_APP" ]; then
+              echo "Found app at $FOUND_APP"
+              cp -R "$FOUND_APP" Payload/
+            else
+              echo "Error: No Runner.app binary was compiled by Xcode."
+              exit 1
+            fi
+          fi
           zip -r buzdolabinda-ne-var-ios.ipa Payload
           ls -lh buzdolabinda-ne-var-ios.ipa
 
