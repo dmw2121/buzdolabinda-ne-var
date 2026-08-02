@@ -96,7 +96,7 @@ class _AiCameraModalState extends State<AiCameraModal> {
               setState(() {
                 _currentApiKey = newKey;
               });
-              if (mounted) Navigator.pop(ctx);
+              if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Gemini API Key başarıyla kaydedildi! ✨'),
