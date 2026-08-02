@@ -42,7 +42,6 @@ jobs:
   build-ipa:
     name: Build iOS App
     runs-on: macos-latest
-    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -53,22 +52,17 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install CocoaPods & Dependencies
-        run: |
-          flutter pub get
-          cd ios || true
-          pod install || true
-          cd .. || true
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Build iOS Release (No Codesign)
-        run: |
-          flutter build ios --simulator --release || flutter build ios --release --no-codesign || true
+        run: flutter build ios --release --no-codesign
 
       - name: Package iOS IPA
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphonesimulator/Runner.app Payload/ || cp -R build/ios/iphoneos/Runner.app Payload/ || true
-          zip -r buzdolabinda-ne-var-ios.ipa Payload || true
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -r buzdolabinda-ne-var-ios.ipa Payload
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
@@ -78,7 +72,7 @@ jobs:
 
   create-release:
     name: Create GitHub Release
-    needs: [build-apk]
+    needs: [build-apk, build-ipa]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -94,7 +88,6 @@ jobs:
 
       - name: Download IPA Artifact
         uses: actions/download-artifact@v4
-        continue-on-error: true
         with:
           name: buzdolabinda-ne-var-ipa
           path: build-artifacts
@@ -109,7 +102,7 @@ jobs:
             - 300 Mutfak Malzemesi Tespiti & Eşleştirme
             - Sevimli Gece/Gündüz Modu (Dark Mode)
             - Fotoğraf Çek & Malzeme Tespit Et
-            - Android APK (`app-release.apk`) ve iOS Paket İndirme Bağlantıları Dahil!
+            - Android APK (`app-release.apk`) ve iOS IPA (`buzdolabinda-ne-var-ios.ipa`) Dahil!
           files: |
-            build-artifacts/*.apk
-            build-artifacts/*.ipa
+            build-artifacts/app-release.apk
+            build-artifacts/buzdolabinda-ne-var-ios.ipa
