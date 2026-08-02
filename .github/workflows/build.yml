@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-ipa:
-    name: 🍏 Build Unsigned iOS IPA
+    name: 🍏 Build iOS IPA
     runs-on: macos-latest
     steps:
       - name: Checkout repository
@@ -24,13 +24,13 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Release App (No Code Signing)
-        run: flutter build ios --release --no-codesign
+      - name: Build iOS Simulator App
+        run: flutter build ios --simulator --release --no-tree-shake-icons
 
-      - name: Package Unsigned IPA for Sideloading
+      - name: Package iOS IPA for Sideloading
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
+          cp -R build/ios/iphonesimulator/Runner.app Payload/
           zip -r buzdolabinda-ne-var-ios.ipa Payload
           ls -lh buzdolabinda-ne-var-ios.ipa
 
