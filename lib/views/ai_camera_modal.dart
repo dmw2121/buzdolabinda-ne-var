@@ -229,9 +229,9 @@ class _AiCameraModalState extends State<AiCameraModal> {
               const Text('📸 ', style: TextStyle(fontSize: 22)),
               const Expanded(
                 child: Text(
-                  'AI Buzdolabı Taraması',
+                  'Fotoğraf Çek & Malzeme Tespit Et',
                   style: TextStyle(
-                    fontSize: 19,
+                    fontSize: 18,
                     fontWeight: FontWeight.w900,
                     color: KawaiiColors.textDark,
                   ),
