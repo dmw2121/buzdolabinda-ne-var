@@ -53,15 +53,27 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          cd ios
+          pod install || true
+          cd ..
 
-      - name: Build iOS Release (No Codesign)
-        run: flutter build ios --release --no-codesign
+      - name: Build iOS App with Xcode (No Code Signing)
+        run: |
+          flutter build ios --release --no-codesign --no-tree-shake-icons || true
+          if [ ! -d "build/ios/iphoneos/Runner.app" ]; then
+            xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build || true
+          fi
 
       - name: Package iOS IPA
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            cp -R build/ios/iphoneos/Runner.app Payload/
+          elif [ -d "ios/build/Build/Products/Release-iphoneos/Runner.app" ]; then
+            cp -R ios/build/Build/Products/Release-iphoneos/Runner.app Payload/
+          fi
           zip -r buzdolabinda-ne-var-ios.ipa Payload
 
       - name: Upload iOS IPA Artifact
