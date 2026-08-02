@@ -237,39 +237,6 @@ class _AiCameraModalState extends State<AiCameraModal> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: _showApiKeyDialog,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: hasKey ? KawaiiColors.lightMint : Colors.amber.shade50,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(
-                      color: hasKey ? KawaiiColors.mint : Colors.amber.shade400,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        hasKey ? Icons.check_circle_rounded : Icons.key_rounded,
-                        size: 14,
-                        color: hasKey ? Colors.green : Colors.amber.shade800,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        hasKey ? 'Gemini AI' : 'API Key Gir',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          color: hasKey ? Colors.green.shade800 : Colors.amber.shade900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
 

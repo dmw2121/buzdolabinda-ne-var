@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'views/onboarding_screen.dart';
 import 'views/welcome_splash_screen.dart';
 
+final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.light);
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const BuzdolabimApp());
@@ -23,6 +25,13 @@ class KawaiiColors {
   static const Color coral = Color(0xFFFF6B81);
   static const Color lightMint = Color(0xFFE8FAEF);
   static const Color lightYellow = Color(0xFFFFF9E6);
+
+  // 🌙 CUTE SOFT DARK MODE PALETTE
+  static const Color darkBg = Color(0xFF1E1A22);
+  static const Color darkCard = Color(0xFF2B2430);
+  static const Color darkCardBorder = Color(0xFF4A3B52);
+  static const Color darkTextPrimary = Color(0xFFFFF0F5);
+  static const Color darkTextMuted = Color(0xFFD4C3DB);
 }
 
 class BuzdolabimApp extends StatefulWidget {
@@ -70,20 +79,36 @@ class _BuzdolabimAppState extends State<BuzdolabimApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Buzdolabımdan Yemek Tarifleri',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: KawaiiColors.creamBg,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: KawaiiColors.peach,
-          primary: KawaiiColors.peach,
-          secondary: KawaiiColors.mint,
-          surface: Colors.white,
-        ),
-      ),
-      home: _isLoading
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, currentMode, child) {
+        return MaterialApp(
+          title: 'Buzdolabımdan Yemek Tarifleri',
+          debugShowCheckedModeBanner: false,
+          themeMode: currentMode,
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: KawaiiColors.creamBg,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: KawaiiColors.peach,
+              primary: KawaiiColors.peach,
+              secondary: KawaiiColors.mint,
+              surface: Colors.white,
+            ),
+          ),
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: KawaiiColors.darkBg,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: KawaiiColors.peach,
+              brightness: Brightness.dark,
+              primary: KawaiiColors.peach,
+              secondary: KawaiiColors.mint,
+              surface: KawaiiColors.darkCard,
+            ),
+          ),
+          home: _isLoading
           ? const Scaffold(
               backgroundColor: KawaiiColors.creamBg,
               body: Center(
@@ -95,6 +120,8 @@ class _BuzdolabimAppState extends State<BuzdolabimApp> {
               : OnboardingScreen(
                   onDone: _completeOnboarding,
                 )),
+        );
+      },
     );
   }
 }

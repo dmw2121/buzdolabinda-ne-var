@@ -212,6 +212,34 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+        // Dark mode toggle button
+        ValueListenableBuilder<ThemeMode>(
+          valueListenable: themeNotifier,
+          builder: (context, mode, child) {
+            final isDark = mode == ThemeMode.dark;
+            return GestureDetector(
+              onTap: () {
+                themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF3B2F44) : KawaiiColors.lightYellow,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF6B537E) : const Color(0xFFFFD54F),
+                    width: 1.5,
+                  ),
+                ),
+                child: Text(
+                  isDark ? '🌙' : '☀️',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            );
+          },
+        ),
         // Ingredient count badge (tappable to open Fridge)
         GestureDetector(
           onTap: widget.onOpenFridge,
