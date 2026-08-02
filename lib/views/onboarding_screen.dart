@@ -43,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _pages[_currentPage].bgColor,
+      backgroundColor: KawaiiColors.getBg(context),
       body: SafeArea(
         child: Column(
           children: [

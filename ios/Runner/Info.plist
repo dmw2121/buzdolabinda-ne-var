@@ -66,5 +66,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Buzdolabınızdaki veya mutfağınızdaki malzemeleri otomatik tespit etmek için kameranıza erişim gerekiyor.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Galerinizdeki yemek ve malzeme fotoğraflarını seçebilmeniz için galeri erişimi gerekiyor.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Fotoğraf ve video çekimi esnasında mikrofon erişimi gerekiyor.</string>
 </dict>
 </plist>
