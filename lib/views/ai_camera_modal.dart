@@ -20,39 +20,107 @@ class AiCameraModal extends StatefulWidget {
 class _AiCameraModalState extends State<AiCameraModal> {
   final ImagePicker _picker = ImagePicker();
   int _remainingScans = 20;
-  bool _isLoadingScans = true;
   bool _isScanning = false;
-  Uint8List? _selectedImageBytes;
+  bool _hasScannedOnce = false;
+  String? _currentApiKey;
   List<Ingredient> _detectedIngredients = [];
 
   @override
   void initState() {
     super.initState();
-    _loadDailyLimit();
+    _loadInitialState();
   }
 
-  Future<void> _loadDailyLimit() async {
+  Future<void> _loadInitialState() async {
     final remaining = await AiCameraService.getRemainingScans();
+    final key = await AiCameraService.getApiKey();
     if (mounted) {
       setState(() {
         _remainingScans = remaining;
-        _isLoadingScans = false;
+        _currentApiKey = key;
       });
     }
+  }
+
+  void _showApiKeyDialog() {
+    final controller = TextEditingController(text: _currentApiKey ?? '');
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
+        title: const Row(
+          children: [
+            Text('🔑 '),
+            Text(
+              'Gemini API Key Girin',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Fotoğraftan %100 gerçek yapay zeka tespiti yapmak için ücretsiz Google Gemini API Key kullanabilirsiniz.',
+              style: TextStyle(fontSize: 12, color: KawaiiColors.textMuted),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: 'AIzaSy...',
+                labelText: 'API Anahtarı',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                filled: true,
+                fillColor: KawaiiColors.creamBg,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'aistudio.google.com adresinden saniyeler içinde ücretsiz alabilirsiniz.',
+              style: TextStyle(fontSize: 10, color: Colors.grey),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İptal', style: TextStyle(color: KawaiiColors.textMuted)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newKey = controller.text.trim();
+              await AiCameraService.saveApiKey(newKey);
+              setState(() {
+                _currentApiKey = newKey;
+              });
+              if (mounted) Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Gemini API Key başarıyla kaydedildi! ✨'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: KawaiiColors.coral,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+            child: const Text('Kaydet'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _pickAndScanImage(ImageSource source) async {
     if (_remainingScans <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(
-            children: [
-              Text('🛑 '),
-              Expanded(
-                child: Text('Bugünlük 20 AI tarama hakkınızı doldurdunuz. Gece 00:00\'da 20 yeni hak yüklenecektir!'),
-              ),
-            ],
-          ),
+          content: const Text('Bugünlük AI tarama hakkınızı doldurdunuz.'),
           backgroundColor: KawaiiColors.coral,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -74,15 +142,15 @@ class _AiCameraModalState extends State<AiCameraModal> {
       final bytes = await file.readAsBytes();
 
       setState(() {
-        _selectedImageBytes = bytes;
         _isScanning = true;
+        _hasScannedOnce = true;
         _detectedIngredients = [];
       });
 
       // Hak düş
       final newRemaining = await AiCameraService.useScanCredit();
 
-      // Görseli AI taramadan geçir
+      // GERÇEK GEMINI API TARAMASI
       final results = await AiCameraService.scanFridgeImage(bytes);
 
       if (mounted) {
@@ -118,10 +186,10 @@ class _AiCameraModalState extends State<AiCameraModal> {
         content: Row(
           children: [
             const Text('✨ '),
-            Text('${ids.length} malzeme dolabınıza eklendi!'),
+            Text('${_detectedIngredients.length} malzeme dolabınıza eklendi!'),
           ],
         ),
-        backgroundColor: Colors.green.shade700,
+        backgroundColor: Colors.green.shade600,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
@@ -130,6 +198,8 @@ class _AiCameraModalState extends State<AiCameraModal> {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasKey = _currentApiKey != null && _currentApiKey!.trim().isNotEmpty;
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.88,
@@ -153,7 +223,7 @@ class _AiCameraModalState extends State<AiCameraModal> {
           ),
           const SizedBox(height: 16),
 
-          // TITLE & DAILY LIMIT BADGE
+          // TITLE & API KEY BUTTON
           Row(
             children: [
               const Text('📸 ', style: TextStyle(fontSize: 22)),
@@ -161,33 +231,43 @@ class _AiCameraModalState extends State<AiCameraModal> {
                 child: Text(
                   'AI Buzdolabı Taraması',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 19,
                     fontWeight: FontWeight.w900,
                     color: KawaiiColors.textDark,
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: KawaiiColors.lightMint,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: KawaiiColors.mint, width: 1.2),
-                ),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.auto_awesome_rounded, size: 14, color: Colors.green),
-                    SizedBox(width: 4),
-                    Text(
-                      'Akıllı Tarama',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.green,
-                      ),
+              GestureDetector(
+                onTap: _showApiKeyDialog,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: hasKey ? KawaiiColors.lightMint : Colors.amber.shade50,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: hasKey ? KawaiiColors.mint : Colors.amber.shade400,
+                      width: 1.2,
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        hasKey ? Icons.check_circle_rounded : Icons.key_rounded,
+                        size: 14,
+                        color: hasKey ? Colors.green : Colors.amber.shade800,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        hasKey ? 'Gemini AI' : 'API Key Gir',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          color: hasKey ? Colors.green.shade800 : Colors.amber.shade900,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -225,7 +305,7 @@ class _AiCameraModalState extends State<AiCameraModal> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'Yapay zeka buzdolabınızı inceliyor… 🔍',
+                    'Gemini Yapay Zeka fotoğrafı inceliyor… 🔍',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -234,7 +314,7 @@ class _AiCameraModalState extends State<AiCameraModal> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Fotoğraftaki malzemeler taranıyor',
+                    'Gerçek malzemeler tespit ediliyor',
                     style: TextStyle(fontSize: 12, color: KawaiiColors.textMuted),
                   ),
                 ],
@@ -331,90 +411,115 @@ class _AiCameraModalState extends State<AiCameraModal> {
               ),
             ),
           ] else ...[
-            // ACTION BUTTONS TO CHOOSE IMAGE
-            if (_remainingScans <= 0) ...[
+            // IF SCANNING HAS FINISHED AND NO INGREDIENTS DETECTED (HONEST EMPTY STATE)
+            if (_hasScannedOnce && _detectedIngredients.isEmpty) ...[
               Container(
                 padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Colors.pink.shade50,
+                  color: Colors.amber.shade50,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: KawaiiColors.coral, width: 1.5),
+                  border: Border.all(color: Colors.amber.shade400, width: 1.5),
                 ),
-                child: const Row(
+                child: Column(
                   children: [
-                    Text('🛑 ', style: TextStyle(fontSize: 20)),
-                    Expanded(
-                      child: Text(
-                        'Bugünlük 20 AI tarama hakkınızı kullandınız. Yarın gece 00:00\'da 20 yeni hakkınız yüklenecektir!',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: KawaiiColors.coral),
-                      ),
+                    const Row(
+                      children: [
+                        Text('🤔 ', style: TextStyle(fontSize: 18)),
+                        Expanded(
+                          child: Text(
+                            'Fotoğrafta malzeme tespit edilemedi veya API Key eksik.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF8B5E00),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
+                    if (!hasKey)
+                      ElevatedButton.icon(
+                        onPressed: _showApiKeyDialog,
+                        icon: const Icon(Icons.key_rounded, size: 16),
+                        label: const Text('Ücretsiz Gemini API Key Ekle (10 Sn)'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber.shade700,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ] else ...[
-              Row(
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 110,
-                      child: ElevatedButton(
-                        onPressed: () => _pickAndScanImage(ImageSource.camera),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: KawaiiColors.textDark,
-                          elevation: 0,
-                          side: const BorderSide(color: KawaiiColors.cardBorder, width: 1.8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('📷', style: TextStyle(fontSize: 32)),
-                            SizedBox(height: 6),
-                            Text(
-                              'Fotoğraf Çek',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: SizedBox(
-                      height: 110,
-                      child: ElevatedButton(
-                        onPressed: () => _pickAndScanImage(ImageSource.gallery),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: KawaiiColors.textDark,
-                          elevation: 0,
-                          side: const BorderSide(color: KawaiiColors.cardBorder, width: 1.8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('🖼️', style: TextStyle(fontSize: 32)),
-                            SizedBox(height: 6),
-                            Text(
-                              'Galeriden Seç',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
+
+            // ACTION BUTTONS TO CHOOSE IMAGE
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 110,
+                    child: ElevatedButton(
+                      onPressed: () => _pickAndScanImage(ImageSource.camera),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: KawaiiColors.textDark,
+                        elevation: 0,
+                        side: const BorderSide(color: KawaiiColors.cardBorder, width: 1.8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('📷', style: TextStyle(fontSize: 32)),
+                          SizedBox(height: 6),
+                          Text(
+                            'Fotoğraf Çek',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: SizedBox(
+                    height: 110,
+                    child: ElevatedButton(
+                      onPressed: () => _pickAndScanImage(ImageSource.gallery),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: KawaiiColors.textDark,
+                        elevation: 0,
+                        side: const BorderSide(color: KawaiiColors.cardBorder, width: 1.8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('🖼️', style: TextStyle(fontSize: 32)),
+                          SizedBox(height: 6),
+                          Text(
+                            'Galeriden Seç',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
 
           const SizedBox(height: 20),
