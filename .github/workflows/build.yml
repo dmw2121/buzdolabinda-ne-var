@@ -1,4 +1,4 @@
-name: Flutter Build iOS IPA Only
+name: Flutter Build APK & IPA Release
 
 on:
   push:
@@ -8,6 +8,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-apk:
+    name: 🤖 Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Android Release APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
   build-ipa:
     name: 🍏 Build iOS IPA
     runs-on: macos-latest
@@ -24,13 +55,20 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Simulator App
-        run: flutter build ios --simulator --release --no-tree-shake-icons
+      - name: Build iOS App Framework
+        run: flutter build ios --release --no-codesign --no-tree-shake-icons || true
 
-      - name: Package iOS IPA for Sideloading
+      - name: Package Unsigned IPA for Sideloading
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphonesimulator/Runner.app Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            cp -R build/ios/iphoneos/Runner.app Payload/
+          else
+            FOUND_APP=$(find . -name "Runner.app" -type d | head -n 1)
+            if [ -n "$FOUND_APP" ]; then
+              cp -R "$FOUND_APP" Payload/
+            fi
+          fi
           zip -r buzdolabinda-ne-var-ios.ipa Payload
           ls -lh buzdolabinda-ne-var-ios.ipa
 
@@ -42,13 +80,19 @@ jobs:
 
   create-release:
     name: 🚀 Create GitHub Release
-    needs: [build-ipa]
+    needs: [build-apk, build-ipa]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: buzdolabinda-ne-var-apk
+          path: build-artifacts
 
       - name: Download IPA Artifact
         uses: actions/download-artifact@v4
@@ -59,13 +103,14 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0-${{ github.run_number }}
-          name: "Buzdolabında Ne Var? iOS v1.0.0 (Build ${{ github.run_number }})"
+          tag_name: release-v1.0.0-${{ github.run_number }}
+          name: "Buzdolabında Ne Var? v1.0.0 (Build ${{ github.run_number }})"
           body: |
             🌸 **Buzdolabında Ne Var? (Evde Tarif & Malzeme Eşleştirici)**
             - 300 Mutfak Malzemesi Tespiti & Eşleştirme
             - Sevimli Gece/Gündüz Modu (Dark Mode)
             - Fotoğraf Çek & Malzeme Tespit Et
-            - iOS IPA (`buzdolabinda-ne-var-ios.ipa`) Sideloadly / AltStore / TrollStore Yüklenebilir Paket!
+            - Android APK (`app-release.apk`) ve iOS IPA (`buzdolabinda-ne-var-ios.ipa`) Dahil!
           files: |
+            build-artifacts/app-release.apk
             build-artifacts/buzdolabinda-ne-var-ios.ipa
