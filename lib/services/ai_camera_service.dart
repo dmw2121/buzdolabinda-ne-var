@@ -118,7 +118,7 @@ If no ingredients match or image is not clear, return empty text.
             }
           ]
         }),
-      ).timeout(const Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 35));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
