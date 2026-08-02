@@ -24,13 +24,29 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build iOS Release App (No Code Signing)
-        run: flutter build ios --release --no-codesign --no-tree-shake-icons
+      - name: Build iOS Release App
+        run: |
+          flutter build ios --simulator --release --no-tree-shake-icons || flutter build ios --release --no-codesign --no-tree-shake-icons
 
       - name: Package Unsigned IPA for Sideloading
         run: |
           mkdir -p Payload
-          cp -R build/ios/iphoneos/Runner.app Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            echo "Found iphoneos Runner.app"
+            cp -R build/ios/iphoneos/Runner.app Payload/
+          elif [ -d "build/ios/iphonesimulator/Runner.app" ]; then
+            echo "Found iphonesimulator Runner.app"
+            cp -R build/ios/iphonesimulator/Runner.app Payload/
+          else
+            echo "Searching for compiled Runner.app..."
+            FOUND_APP=$(find build/ -name "Runner.app" -type d | head -n 1)
+            if [ -n "$FOUND_APP" ]; then
+              cp -R "$FOUND_APP" Payload/
+            else
+              echo "Error: No Runner.app compiled."
+              exit 1
+            fi
+          fi
           zip -r buzdolabinda-ne-var-ios.ipa Payload
           ls -lh buzdolabinda-ne-var-ios.ipa
 
