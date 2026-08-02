@@ -84,7 +84,7 @@ class AiCameraService {
     try {
       final base64Img = base64Encode(imageBytes);
       final url = Uri.parse(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}',
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey.trim()}',
       );
 
       final prompt = '''
