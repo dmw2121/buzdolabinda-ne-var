@@ -343,7 +343,7 @@ class _FairyScreenState extends State<FairyScreen>
                               SizedBox(height: 3),
                               Text(
                                 'Dolabınızın veya tezgahınızın fotoğrafını çekin, malzemeler anında eklensin!',
-                                style: TextStyle(fontSize: 11, color: Colors.white90, height: 1.35),
+                                style: TextStyle(fontSize: 11, color: Colors.white70, height: 1.35),
                               ),
                             ],
                           ),
