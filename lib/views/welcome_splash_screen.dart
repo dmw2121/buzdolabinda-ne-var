@@ -113,17 +113,23 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF5),
+      backgroundColor: KawaiiColors.getBg(context),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Column(
             children: [
-              const Spacer(),
+              const SizedBox(height: 20),
 
-              // ANIMATED LOGO / EMOJI
-              ScaleTransition(
-                scale: _scaleAnimation,
+              // LOGO
+              AnimatedBuilder(
+                animation: _scaleAnimation,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: child,
+                  );
+                },
                 child: Container(
                   width: 120,
                   height: 120,
@@ -132,9 +138,9 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: KawaiiColors.peach.withOpacity(0.35),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
+                        color: KawaiiColors.peach.withOpacity(0.4),
+                        blurRadius: 28,
+                        offset: const Offset(0, 10),
                       ),
                     ],
                   ),
@@ -154,22 +160,22 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
               const SizedBox(height: 24),
 
               // APP TITLE
-              const Text(
+              Text(
                 'Buzdolabımdan',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: KawaiiColors.textMuted,
+                  color: KawaiiColors.getTextSecondary(context),
                   letterSpacing: 0.5,
                 ),
               ),
               const SizedBox(height: 2),
-              const Text(
+              Text(
                 'Yemek Tarifleri',
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w900,
-                  color: KawaiiColors.textDark,
+                  color: KawaiiColors.getTextPrimary(context),
                   letterSpacing: -0.5,
                 ),
               ),
@@ -181,7 +187,7 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: KawaiiColors.getCardBg(context),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(color: const Color(0xFFFFD1DC), width: 1.8),
                   boxShadow: [

@@ -579,16 +579,23 @@ class _FairyScreenState extends State<FairyScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: KawaiiColors.lightMint,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? KawaiiColors.darkCard
+            : KawaiiColors.lightMint,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: KawaiiColors.mint, width: 1.5),
+        border: Border.all(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? KawaiiColors.darkCardBorder
+              : KawaiiColors.mint,
+          width: 1.5,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text('🧺 ', style: TextStyle(fontSize: 18)),
+              const Text('🧺 ', style: TextStyle(fontSize: 18)),
               Expanded(
                 child: Text(
                   'Temel Mutfak Malzemelerim',
@@ -602,9 +609,9 @@ class _FairyScreenState extends State<FairyScreen>
             ],
           ),
           const SizedBox(height: 4),
-          const Text(
+          Text(
             'Dokunarak temel malzemelerinizi dolabınıza ekleyebilir veya çıkarabilirsiniz:',
-            style: TextStyle(fontSize: 12, color: KawaiiColors.textMuted),
+            style: TextStyle(fontSize: 12, color: KawaiiColors.getTextSecondary(context)),
           ),
           const SizedBox(height: 12),
 
@@ -625,10 +632,18 @@ class _FairyScreenState extends State<FairyScreen>
                   duration: const Duration(milliseconds: 180),
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: isSelected ? KawaiiColors.mint : Colors.white,
+                    color: isSelected
+                        ? (Theme.of(context).brightness == Brightness.dark
+                            ? const Color(0xFF2E6B4B)
+                            : KawaiiColors.mint)
+                        : KawaiiColors.getCardBg(context),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: isSelected ? KawaiiColors.mint : const Color(0xFFC8E6C9),
+                      color: isSelected
+                          ? KawaiiColors.mint
+                          : (Theme.of(context).brightness == Brightness.dark
+                              ? KawaiiColors.darkCardBorder
+                              : const Color(0xFFC8E6C9)),
                       width: 1.5,
                     ),
                   ),

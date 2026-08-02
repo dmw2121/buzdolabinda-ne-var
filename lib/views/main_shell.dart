@@ -63,13 +63,13 @@ class _MainShellState extends State<MainShell> {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: KawaiiColors.getCardBg(context),
           border: Border(
-            top: BorderSide(color: KawaiiColors.cardBorder, width: 1),
+            top: BorderSide(color: KawaiiColors.getBorder(context), width: 1),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withOpacity(0.08),
               blurRadius: 12,
               offset: const Offset(0, -4),
             ),
@@ -100,7 +100,7 @@ class _MainShellState extends State<MainShell> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? KawaiiColors.peach.withOpacity(0.15) : Colors.transparent,
+          color: isActive ? KawaiiColors.peach.withOpacity(0.18) : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -118,7 +118,7 @@ class _MainShellState extends State<MainShell> {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: isActive ? FontWeight.w800 : FontWeight.w500,
-                color: isActive ? KawaiiColors.coral : KawaiiColors.textMuted,
+                color: isActive ? KawaiiColors.coral : KawaiiColors.getTextSecondary(context),
               ),
             ),
           ],

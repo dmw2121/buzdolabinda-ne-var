@@ -81,9 +81,16 @@ class _FridgeScreenState extends State<FridgeScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 14),
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF0F3), // Soft pastel peach background matching app theme
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? KawaiiColors.darkCard
+                    : const Color(0xFFFFF0F3),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: const Color(0xFFFFD1DC), width: 1.8),
+                border: Border.all(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? KawaiiColors.darkCardBorder
+                      : const Color(0xFFFFD1DC),
+                  width: 1.8,
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: KawaiiColors.peach.withOpacity(0.12),
@@ -255,10 +262,16 @@ class _FridgeScreenState extends State<FridgeScreen> {
                         duration: const Duration(milliseconds: 180),
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: isSelected ? KawaiiColors.mint : Colors.white,
+                          color: isSelected
+                              ? (Theme.of(context).brightness == Brightness.dark
+                                  ? const Color(0xFF2E6B4B)
+                                  : KawaiiColors.mint)
+                              : KawaiiColors.getCardBg(context),
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(
-                            color: isSelected ? KawaiiColors.mint : KawaiiColors.cardBorder,
+                            color: isSelected
+                                ? KawaiiColors.mint
+                                : KawaiiColors.getBorder(context),
                             width: 1.5,
                           ),
                           boxShadow: isSelected

@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-apk:
-    name: Build Android APK
+    name: 🤖 Build Android APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build Android Release APK
         run: flutter build apk --release
 
       - name: Upload APK Artifact
@@ -40,7 +40,7 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
   build-ipa:
-    name: Build iOS App
+    name: 🍏 Build iOS IPA
     runs-on: macos-latest
     steps:
       - name: Checkout repository
@@ -53,28 +53,21 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: |
-          flutter pub get
-          cd ios
-          pod install || true
-          cd ..
+        run: flutter pub get
 
-      - name: Build iOS App with Xcode (No Code Signing)
+      - name: Build iOS Release App (No Code Signing)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package Unsigned IPA for Sideloading
         run: |
-          flutter build ios --release --no-codesign --no-tree-shake-icons || true
           if [ ! -d "build/ios/iphoneos/Runner.app" ]; then
-            xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build || true
+            echo "Error: Runner.app not found in build/ios/iphoneos/"
+            exit 1
           fi
-
-      - name: Package iOS IPA
-        run: |
           mkdir -p Payload
-          if [ -d "build/ios/iphoneos/Runner.app" ]; then
-            cp -R build/ios/iphoneos/Runner.app Payload/
-          elif [ -d "ios/build/Build/Products/Release-iphoneos/Runner.app" ]; then
-            cp -R ios/build/Build/Products/Release-iphoneos/Runner.app Payload/
-          fi
+          cp -R build/ios/iphoneos/Runner.app Payload/
           zip -r buzdolabinda-ne-var-ios.ipa Payload
+          ls -lh buzdolabinda-ne-var-ios.ipa
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
@@ -83,7 +76,7 @@ jobs:
           path: buzdolabinda-ne-var-ios.ipa
 
   create-release:
-    name: Create GitHub Release
+    name: 🚀 Create GitHub Release
     needs: [build-apk, build-ipa]
     runs-on: ubuntu-latest
     permissions:
@@ -114,7 +107,7 @@ jobs:
             - 300 Mutfak Malzemesi Tespiti & Eşleştirme
             - Sevimli Gece/Gündüz Modu (Dark Mode)
             - Fotoğraf Çek & Malzeme Tespit Et
-            - Android APK (`app-release.apk`) ve iOS IPA (`buzdolabinda-ne-var-ios.ipa`) Dahil!
+            - Android APK (`app-release.apk`) ve iOS IPA (`buzdolabinda-ne-var-ios.ipa`) Sideloadly / AltStore Paketleri!
           files: |
             build-artifacts/app-release.apk
             build-artifacts/buzdolabinda-ne-var-ios.ipa
