@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/kawaii_colors.dart';
+import '../main.dart';
 import '../services/ai_camera_service.dart';
 
 class SubscriptionPaywallModal extends StatefulWidget {
