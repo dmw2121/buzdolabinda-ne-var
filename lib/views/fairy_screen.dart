@@ -139,14 +139,28 @@ class _FairyScreenState extends State<FairyScreen>
   }
 
   void _pickDailyRecommendation() {
-    if (RecipesData.recipes.isNotEmpty) {
-      final now = DateTime.now();
-      final seed = now.year * 1000 + now.month * 100 + now.day;
-      final rnd = Random(seed + Random().nextInt(100));
-      final idx = rnd.nextInt(RecipesData.recipes.length);
+    final fullMatches = RecipesData.recipes.where((recipe) {
+      final missing = recipe.requiredIngredients.where((ing) => !widget.selectedIngredientIds.contains(ing.id)).toList();
+      return missing.isEmpty;
+    }).toList();
+
+    if (fullMatches.isNotEmpty) {
+      final rnd = Random();
       setState(() {
-        _recommendedRecipe = RecipesData.recipes[idx];
+        _recommendedRecipe = fullMatches[rnd.nextInt(fullMatches.length)];
       });
+    } else {
+      setState(() {
+        _recommendedRecipe = null;
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant FairyScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedIngredientIds != widget.selectedIngredientIds) {
+      _pickDailyRecommendation();
     }
   }
 

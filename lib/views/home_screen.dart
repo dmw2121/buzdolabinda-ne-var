@@ -490,21 +490,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRecipeImage(Recipe recipe) {
+    Widget fallbackNetworkOrEmoji = recipe.imageUrl != null
+        ? Image.network(
+            recipe.imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 38))),
+          )
+        : Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 38)));
+
     if (recipe.imageAsset != null) {
       return Image.asset(
         recipe.imageAsset!,
         fit: BoxFit.cover,
-        errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 38))),
+        errorBuilder: (c, e, s) => fallbackNetworkOrEmoji,
       );
     }
-    if (recipe.imageUrl != null) {
-      return Image.network(
-        recipe.imageUrl!,
-        fit: BoxFit.cover,
-        errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 38))),
-      );
-    }
-    return Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 38)));
+
+    return fallbackNetworkOrEmoji;
   }
 
   void _showImagePopup(BuildContext context, Recipe recipe) {

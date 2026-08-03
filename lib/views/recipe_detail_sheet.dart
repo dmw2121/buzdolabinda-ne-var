@@ -149,7 +149,7 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: KawaiiColors.getCardBg(context),
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(color: KawaiiColors.cardBorder, width: 1.5),
                       ),
@@ -158,13 +158,13 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                           Row(
                             children: [
                               const Text('🛒 ', style: TextStyle(fontSize: 16)),
-                              const Expanded(
+                              Expanded(
                                 child: Text(
                                   'Malzemeler',
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
-                                    color: KawaiiColors.textDark,
+                                    color: KawaiiColors.getTextPrimary(context),
                                   ),
                                 ),
                               ),
@@ -226,9 +226,9 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                   const SizedBox(height: 20),
 
                   // STEPS
-                  const Text(
+                  Text(
                     'Yapılışı',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: KawaiiColors.textDark),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: KawaiiColors.getTextPrimary(context)),
                   ),
                   const SizedBox(height: 12),
 
@@ -263,15 +263,15 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
                             child: Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: KawaiiColors.getCardBg(context),
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(color: KawaiiColors.cardBorder, width: 1),
                               ),
                               child: Text(
                                 step,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: KawaiiColors.textDark,
+                                  color: KawaiiColors.getTextPrimary(context),
                                   height: 1.5,
                                 ),
                               ),
@@ -336,21 +336,23 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
   }
 
   Widget _buildRecipeImage(Recipe recipe) {
+    Widget fallbackNetworkOrEmoji = recipe.imageUrl != null
+        ? Image.network(
+            recipe.imageUrl!,
+            fit: BoxFit.cover,
+            errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 64))),
+          )
+        : Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 64)));
+
     if (recipe.imageAsset != null) {
       return Image.asset(
         recipe.imageAsset!,
         fit: BoxFit.cover,
-        errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 64))),
+        errorBuilder: (c, e, s) => fallbackNetworkOrEmoji,
       );
     }
-    if (recipe.imageUrl != null) {
-      return Image.network(
-        recipe.imageUrl!,
-        fit: BoxFit.cover,
-        errorBuilder: (c, e, s) => Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 64))),
-      );
-    }
-    return Center(child: Text(recipe.emoji, style: const TextStyle(fontSize: 64)));
+
+    return fallbackNetworkOrEmoji;
   }
 
   void _showImagePopup(BuildContext context, Recipe recipe) {
@@ -386,7 +388,7 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: KawaiiColors.getCardBg(context),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: KawaiiColors.cardBorder, width: 1.5),
       ),
@@ -395,7 +397,7 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
         children: [
           Text(icon, style: const TextStyle(fontSize: 14)),
           const SizedBox(width: 4),
-          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: KawaiiColors.textDark)),
+          Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: KawaiiColors.getTextPrimary(context))),
         ],
       ),
     );
@@ -418,9 +420,16 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
 
     final isAvailable = !isMissing;
 
-    final Color bgColor = isAvailable ? const Color(0xFFF1FDF5) : const Color(0xFFFFF0F2);
-    final Color borderColor = isAvailable ? KawaiiColors.mint : const Color(0xFFFFCDD2);
-    final Color textColor = isAvailable ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color bgColor = isDark
+        ? (isAvailable ? const Color(0xFF1B382B) : const Color(0xFF381B22))
+        : (isAvailable ? const Color(0xFFF1FDF5) : const Color(0xFFFFF0F2));
+    final Color borderColor = isDark
+        ? (isAvailable ? const Color(0xFF2E7D32) : const Color(0xFFC62828))
+        : (isAvailable ? KawaiiColors.mint : const Color(0xFFFFCDD2));
+    final Color textColor = isDark
+        ? (isAvailable ? const Color(0xFFA5D6A7) : const Color(0xFFEF9A9A))
+        : (isAvailable ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C));
     final String statusIcon = isAvailable ? '✅' : '❌';
     final String statusLabel = isAvailable ? 'Var' : 'Eksik';
     final Color badgeBg = isAvailable ? const Color(0xFFDCFCE7) : const Color(0xFFFFE4E6);
@@ -440,10 +449,10 @@ class _RecipeDetailSheetState extends State<RecipeDetailSheet> {
           Expanded(
             child: Text(
               cleanText,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: KawaiiColors.textDark,
+                color: KawaiiColors.getTextPrimary(context),
                 height: 1.3,
               ),
             ),

@@ -33,6 +33,7 @@ class Recipe {
   final int difficultyStars; // 1, 2, 3
   final int calories;
   final MealTypeFilter mealType;
+  final String category;
   final List<String> ingredientsText;
   final List<Ingredient> requiredIngredients;
   final List<String> steps;
@@ -48,6 +49,7 @@ class Recipe {
     required this.difficultyStars,
     required this.calories,
     required this.mealType,
+    this.category = 'Nefis Tarifler',
     required this.ingredientsText,
     required this.requiredIngredients,
     required this.steps,

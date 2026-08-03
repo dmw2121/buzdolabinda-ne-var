@@ -129,17 +129,13 @@ class _BuzdolabimAppState extends State<BuzdolabimApp> {
             ),
           ),
           home: _isLoading
-          ? const Scaffold(
-              backgroundColor: KawaiiColors.creamBg,
-              body: Center(
-                child: CircularProgressIndicator(color: KawaiiColors.coral),
-              ),
-            )
-          : (_seenOnboarding
-              ? const WelcomeSplashScreen()
-              : OnboardingScreen(
-                  onDone: _completeOnboarding,
-                )),
+              ? const Scaffold(
+                  backgroundColor: KawaiiColors.creamBg,
+                  body: Center(
+                    child: CircularProgressIndicator(color: KawaiiColors.coral),
+                  ),
+                )
+              : const WelcomeSplashScreen(),
         );
       },
     );
