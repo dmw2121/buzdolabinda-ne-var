@@ -30,7 +30,7 @@ class _SubscriptionPaywallModalState extends State<SubscriptionPaywallModal> {
       'subtitle': 'Her ay yenilenir',
       'period': '/ ay',
       'badge': null,
-      'color': KawaiiColors.softPink,
+      'color': KawaiiColors.lavender,
     },
     {
       'id': '3_months',
@@ -81,7 +81,7 @@ class _SubscriptionPaywallModalState extends State<SubscriptionPaywallModal> {
 
     return Container(
       decoration: BoxDecoration(
-        color: KawaiiColors.getSurface(context),
+        color: KawaiiColors.getCardBg(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [
           BoxShadow(
