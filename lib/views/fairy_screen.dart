@@ -518,6 +518,8 @@ class _FairyScreenState extends State<FairyScreen>
           ),
           const SizedBox(height: 14),
 
+          final recipe = _recommendedRecipe!;
+
           // DISH ITEM
           Row(
             children: [
