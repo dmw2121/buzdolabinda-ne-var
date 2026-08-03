@@ -24,4 +24,5 @@ flutter:
     - assets/images/
     - assets/recipes/
     - assets/logo.png
+    - assets/fridge_logo.png
 

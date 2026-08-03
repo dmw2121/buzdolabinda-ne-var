@@ -276,8 +276,13 @@ class _FairyScreenState extends State<FairyScreen>
                             ),
                           ],
                         ),
-                        child: const Center(
-                          child: Text('👨‍🍳', style: TextStyle(fontSize: 54)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.asset(
+                            'assets/fridge_logo.png',
+                            fit: BoxFit.cover,
+                            errorBuilder: (c, e, s) => const Center(child: Text('🧊', style: TextStyle(fontSize: 54))),
+                          ),
                         ),
                       ),
                     ),
@@ -727,8 +732,153 @@ class _FairyScreenState extends State<FairyScreen>
               );
             }).toList(),
           ),
+
+          // 👑 PREMIUM SUBSCRIPTION BANNER
+          _buildPremiumSubscriptionBanner(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildPremiumSubscriptionBanner(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF3D2B42), const Color(0xFF231F33)]
+              : [const Color(0xFFFFF0F5), const Color(0xFFFFE5EC)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: KawaiiColors.peach, width: 1.8),
+        boxShadow: [
+          BoxShadow(
+            color: KawaiiColors.peach.withOpacity(0.2),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: KawaiiColors.peach,
+                  shape: BoxShape.circle,
+                ),
+                child: const Text('👑', style: TextStyle(fontSize: 22)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Kawaii Şef Premium',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: KawaiiColors.getTextPrimary(context),
+                      ),
+                    ),
+                    Text(
+                      'Abonelik Başlatın & Sınırsız Özellik Açın!',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: KawaiiColors.getTextSecondary(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _buildPremiumFeatureRow(context, '📸 Sınırsız AI Kamera Malzeme Tespiti (Ücretsiz 3 hak sonrasında kilit kalkar)'),
+          _buildPremiumFeatureRow(context, '👩‍🍳 Şef Tavsiyelerine & Özel Reçetelere Öncelikli Erişim'),
+          _buildPremiumFeatureRow(context, '⚡ Işık Hızında Analiz & Tamamen Reklamsız Deneyim'),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: KawaiiColors.getCardBg(context),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: KawaiiColors.cardBorder.withOpacity(0.5)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildPriceChip('Aylık', '79 ₺'),
+                _buildPriceChip('3 Aylık', '179 ₺', badge: '🔥 Popüler'),
+                _buildPriceChip('Yıllık', '399 ₺', badge: '%58 İndirim'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 46,
+            child: ElevatedButton.icon(
+              onPressed: () => SubscriptionPaywallModal.show(context),
+              icon: const Text('🚀', style: TextStyle(fontSize: 16)),
+              label: const Text('PREMİUM ABONELİK BAŞLAT', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: KawaiiColors.coral,
+                foregroundColor: Colors.white,
+                elevation: 3,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPremiumFeatureRow(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: KawaiiColors.getTextPrimary(context),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceChip(String title, String price, {String? badge}) {
+    return Column(
+      children: [
+        if (badge != null)
+          Text(badge, style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: KawaiiColors.coral))
+        else
+          const SizedBox(height: 12),
+        Text(title, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: KawaiiColors.textMuted)),
+        Text(price, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.green)),
+      ],
     );
   }
 }

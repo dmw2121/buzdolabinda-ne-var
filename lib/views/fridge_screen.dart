@@ -22,6 +22,57 @@ class FridgeScreen extends StatefulWidget {
 class _FridgeScreenState extends State<FridgeScreen> {
   IngredientCategory _selectedCategory = IngredientCategory.sebze;
 
+  void _confirmClear(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: KawaiiColors.getCardBg(context),
+        title: Row(
+          children: [
+            const Text('🧹 '),
+            Text(
+              'Emin misiniz?',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: KawaiiColors.getTextPrimary(context),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Buzdolabınızdaki seçili malzemelerin tamamı temizlenecektir.',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: KawaiiColors.getTextPrimary(context).withOpacity(0.8),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('İptal', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              if (widget.onClear != null) {
+                widget.onClear!();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: KawaiiColors.coral,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+            child: const Text('Evet, Temizle', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedCount = widget.selectedIngredientIds.length;
@@ -64,7 +115,7 @@ class _FridgeScreenState extends State<FridgeScreen> {
                   ),
                   if (selectedCount > 0)
                     TextButton.icon(
-                      onPressed: widget.onClear,
+                      onPressed: () => _confirmClear(context),
                       icon: const Icon(Icons.refresh_rounded, size: 16, color: KawaiiColors.coral),
                       label: const Text(
                         'Temizle',

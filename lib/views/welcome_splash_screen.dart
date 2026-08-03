@@ -147,7 +147,7 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(60),
                     child: Image.asset(
-                      'assets/logo.png',
+                      'assets/fridge_logo.png',
                       fit: BoxFit.cover,
                       errorBuilder: (c, e, s) => const Center(
                         child: Text('👨‍🍳', style: TextStyle(fontSize: 64)),

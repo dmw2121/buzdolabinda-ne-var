@@ -165,24 +165,24 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         // Logo
         Container(
-          width: 44,
-          height: 44,
+          width: 52,
+          height: 52,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: KawaiiColors.peach.withOpacity(0.25),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+                color: KawaiiColors.peach.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             child: Image.asset(
-              'assets/logo.png',
+              'assets/fridge_logo.png',
               fit: BoxFit.cover,
-              errorBuilder: (c, e, s) => const Center(child: Text('🍳', style: TextStyle(fontSize: 28))),
+              errorBuilder: (c, e, s) => const Center(child: Text('🧊', style: TextStyle(fontSize: 32))),
             ),
           ),
         ),

@@ -165,7 +165,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(38),
                 child: Image.asset(
-                  'assets/logo.png',
+                  'assets/fridge_logo.png',
                   fit: BoxFit.cover,
                   errorBuilder: (c, e, s) => const Center(
                     child: Text('🍳', style: TextStyle(fontSize: 72)),
