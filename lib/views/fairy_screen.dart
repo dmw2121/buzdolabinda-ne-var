@@ -5,6 +5,8 @@ import '../models/recipe.dart';
 import '../data/recipes_data.dart';
 import 'recipe_detail_sheet.dart';
 import 'ai_camera_modal.dart';
+import 'subscription_paywall_modal.dart';
+import '../services/ai_camera_service.dart';
 
 class FairyScreen extends StatefulWidget {
   final int selectedCount;
@@ -170,23 +172,35 @@ class _FairyScreenState extends State<FairyScreen>
     });
   }
 
-  void _openCameraModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AiCameraModal(
-        onIngredientsDetected: (detectedIds) {
-          if (widget.onToggleIngredient != null) {
-            for (var id in detectedIds) {
-              if (!widget.selectedIngredientIds.contains(id)) {
-                widget.onToggleIngredient!(id);
+  Future<void> _openCameraModal() async {
+    final remaining = await AiCameraService.getRemainingScans();
+    final isSubscribed = await AiCameraService.isSubscribed();
+
+    if (!isSubscribed && remaining <= 0) {
+      if (mounted) {
+        await SubscriptionPaywallModal.show(context);
+      }
+      return;
+    }
+
+    if (mounted) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => AiCameraModal(
+          onIngredientsDetected: (detectedIds) {
+            if (widget.onToggleIngredient != null) {
+              for (var id in detectedIds) {
+                if (!widget.selectedIngredientIds.contains(id)) {
+                  widget.onToggleIngredient!(id);
+                }
               }
             }
-          }
-        },
-      ),
-    );
+          },
+        ),
+      );
+    }
   }
 
   void _openRecipeDetail(Recipe recipe) {

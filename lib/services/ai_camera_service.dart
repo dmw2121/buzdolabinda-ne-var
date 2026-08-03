@@ -6,12 +6,11 @@ import '../models/ingredient.dart';
 import '../data/ingredients_data.dart';
 
 class AiCameraService {
-  static const int maxDailyLimit = 20;
-  static const String _keyDate = 'ai_scan_daily_date';
-  static const String _keyCount = 'ai_scan_remaining_count';
+  static const int maxFreeLimit = 3;
+  static const String _keySubscribed = 'is_premium_subscribed';
+  static const String _keyTotalScans = 'ai_scan_total_count';
   static const String _keyApiKey = 'user_gemini_api_key';
 
-  // Obfuscated default API key to prevent raw secret scanning blocks
   static String get _defaultApiKey {
     try {
       final bytes = base64Decode('QVEuQWI4Uk42SngwclVEOXlNVl9NUnFRVFVDWTZpd0dreTdoNDNURmpGWl9wMmFTREVIS1E=');
@@ -21,13 +20,11 @@ class AiCameraService {
     }
   }
 
-  /// Saves custom Gemini API Key
   static Future<void> saveApiKey(String apiKey) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyApiKey, apiKey.trim());
   }
 
-  /// Gets stored Gemini API Key or default system key
   static Future<String?> getApiKey() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_keyApiKey);
@@ -37,40 +34,47 @@ class AiCameraService {
     return _defaultApiKey;
   }
 
-  /// Günlük kalan tarama hakkını getirir
+  /// Checks if user is subscribed to Premium
+  static Future<bool> isSubscribed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keySubscribed) ?? false;
+  }
+
+  /// Subscribes the user to Premium
+  static Future<void> subscribe(String packageId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keySubscribed, true);
+  }
+
+  /// Kalan ücretsiz çekim hakkını getirir (Abone ise 999 döner)
   static Future<int> getRemainingScans() async {
     try {
+      if (await isSubscribed()) return 999;
       final prefs = await SharedPreferences.getInstance();
-      final todayStr = DateTime.now().toIso8601String().split('T')[0];
-      final savedDate = prefs.getString(_keyDate);
-
-      if (savedDate != todayStr) {
-        await prefs.setString(_keyDate, todayStr);
-        await prefs.setInt(_keyCount, maxDailyLimit);
-        return maxDailyLimit;
-      }
-
-      return prefs.getInt(_keyCount) ?? maxDailyLimit;
+      final used = prefs.getInt(_keyTotalScans) ?? 0;
+      final remaining = maxFreeLimit - used;
+      return remaining < 0 ? 0 : remaining;
     } catch (e) {
-      return maxDailyLimit;
+      return maxFreeLimit;
     }
   }
 
-  /// Tarama hakkını 1 azaltır
+  /// Tarama hakkını 1 harcar
   static Future<int> useScanCredit() async {
-    final remaining = await getRemainingScans();
-    if (remaining <= 0) return 0;
-    
-    final newCount = remaining - 1;
+    if (await isSubscribed()) return 999;
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(_keyCount, newCount);
-    } catch (_) {}
-    return newCount;
+      final used = prefs.getInt(_keyTotalScans) ?? 0;
+      final newUsed = used + 1;
+      await prefs.setInt(_keyTotalScans, newUsed);
+      final remaining = maxFreeLimit - newUsed;
+      return remaining < 0 ? 0 : remaining;
+    } catch (_) {
+      return 0;
+    }
   }
 
   /// Fotoğraftan SADECE GERÇEK Gemini Vision API ile malzeme tespiti yapar.
-  /// UYDURMA / TAHMİNİ PRESET KULLANMAZ!
   static Future<List<Ingredient>> scanFridgeImage(Uint8List imageBytes) async {
     final apiKey = await getApiKey();
     

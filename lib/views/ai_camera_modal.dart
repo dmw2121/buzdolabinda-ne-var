@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../main.dart';
 import '../models/ingredient.dart';
 import '../services/ai_camera_service.dart';
+import 'subscription_paywall_modal.dart';
 
 class AiCameraModal extends StatefulWidget {
   final void Function(List<String> detectedIds) onIngredientsDetected;
@@ -117,15 +118,14 @@ class _AiCameraModalState extends State<AiCameraModal> {
   }
 
   Future<void> _pickAndScanImage(ImageSource source) async {
-    if (_remainingScans <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Bugünlük AI tarama hakkınızı doldurdunuz.'),
-          backgroundColor: KawaiiColors.coral,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        ),
-      );
+    final isSubscribed = await AiCameraService.isSubscribed();
+    if (!isSubscribed && _remainingScans <= 0) {
+      if (mounted) {
+        final res = await SubscriptionPaywallModal.show(context);
+        if (res == true) {
+          _loadInitialState();
+        }
+      }
       return;
     }
 
