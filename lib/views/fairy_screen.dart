@@ -464,7 +464,34 @@ class _FairyScreenState extends State<FairyScreen>
   }
 
   Widget _buildDailyRecommendationCard() {
-    final recipe = _recommendedRecipe;
+    if (_recommendedRecipe == null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: KawaiiColors.getCardBg(context),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: KawaiiColors.cardBorder, width: 1.8),
+        ),
+        child: Column(
+          children: [
+            const Text('👩‍🍳', style: TextStyle(fontSize: 32)),
+            const SizedBox(height: 8),
+            Text(
+              'Buzdolabındaki malzemeleri %100 tam olan bir yemek bulduğumda sana özel şef tavsiyemi burada göreceksin! 🛒✨',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: KawaiiColors.getTextPrimary(context),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final recipe = _recommendedRecipe!;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -517,8 +544,6 @@ class _FairyScreenState extends State<FairyScreen>
             ],
           ),
           const SizedBox(height: 14),
-
-          final recipe = _recommendedRecipe!;
 
           // DISH ITEM
           Row(
