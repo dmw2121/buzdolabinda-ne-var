@@ -26,7 +26,7 @@ class _FairyScreenState extends State<FairyScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
-  late Recipe _recommendedRecipe;
+  Recipe? _recommendedRecipe;
   int _currentTipIndex = 0;
 
   final List<Map<String, String>> _kitchenTips = [
