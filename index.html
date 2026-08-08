@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buzdolabında Ne Var? - Akıllı Yemek & Mutfak Asistanı</title>
+    <meta name="description" content="Dolabınızdaki malzemelerle anında nefis yemek tarifleri bulun! 777+ Tarif, Yapay Zeka Kamera Tespiti ve Akıllı Mutfak Rehberi.">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root {
+            --bg-color: #FAF5EF;
+            --card-bg: #FFFFFF;
+            --text-primary: #321F17;
+            --text-secondary: #7A6258;
+            --primary: #FF5A26;
+            --primary-hover: #E04818;
+            --accent-light: #FFF4F0;
+            --shadow: 0 16px 40px rgba(50, 31, 23, 0.08);
+            --border-radius: 28px;
+        }
+
+        body { background-color: var(--bg-color); color: var(--text-primary); overflow-x: hidden; line-height: 1.5; }
+        
+        /* Navbar */
+        header {
+            position: sticky; top: 0; z-index: 1000; background: rgba(250, 245, 239, 0.92);
+            backdrop-filter: blur(16px); padding: 18px 8%; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(230, 215, 200, 0.6);
+        }
+        .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+        .brand-logo { width: 50px; height: 50px; background: #FFF4F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2.5px solid var(--primary); font-size: 26px; }
+        .brand-name { font-size: 24px; font-weight: 900; color: var(--text-primary); letter-spacing: -0.5px; }
+        .nav-buttons { display: flex; gap: 14px; align-items: center; }
+        .btn { padding: 12px 26px; border-radius: 30px; font-weight: 800; font-size: 15px; text-decoration: none; transition: all 0.25s ease; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: #FFF; box-shadow: 0 8px 20px rgba(255, 90, 38, 0.3); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-secondary { background: #FFF; color: var(--text-primary); border: 2px solid #EADCD0; }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Hero Section */
+        .hero { padding: 80px 8% 60px 8%; text-align: center; max-width: 1100px; margin: 0 auto; position: relative; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: #FFF; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 800; color: var(--primary); border: 1.5px solid #FFE0D6; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(255,90,38,0.08); }
+        .hero-title { font-size: 64px; font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; color: var(--text-primary); }
+        .hero-title span { color: var(--primary); background: linear-gradient(135deg, #FF5A26 0%, #FF8A00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 22px; color: var(--text-secondary); font-weight: 600; max-width: 780px; margin: 0 auto 40px auto; line-height: 1.6; }
+
+        /* Search Section */
+        .search-box-container { background: #FFF; padding: 12px; border-radius: 35px; box-shadow: 0 20px 50px rgba(50, 31, 23, 0.12); display: flex; align-items: center; max-width: 700px; margin: 0 auto 50px auto; border: 2px solid #F0E6DD; }
+        .search-input { flex: 1; border: none; outline: none; padding: 14px 24px; font-size: 18px; font-weight: 600; color: var(--text-primary); background: transparent; }
+        .search-btn { background: var(--primary); color: #FFF; border: none; padding: 16px 36px; border-radius: 28px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.25s ease; }
+        .search-btn:hover { background: var(--primary-hover); }
+
+        /* Interactive Ingredient Pills */
+        .pills-title { font-size: 15px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+        .pills-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 850px; margin: 0 auto 70px auto; }
+        .pill { background: #FFF; border: 1.5px solid #EADCD0; padding: 10px 20px; border-radius: 25px; font-weight: 700; font-size: 15px; color: var(--text-primary); cursor: pointer; transition: all 0.2s ease; user-select: none; display: flex; align-items: center; gap: 6px; }
+        .pill:hover, .pill.selected { background: var(--primary); color: #FFF; border-color: var(--primary); transform: translateY(-2px); }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 90px; text-align: center; }
+        .stat-card { background: #FFF; padding: 35px 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); border: 2px solid #FFF; }
+        .stat-number { font-size: 48px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif; line-height: 1; margin-bottom: 8px; }
+        .stat-label { font-size: 16px; font-weight: 700; color: var(--text-secondary); }
+
+        /* Recipe Section */
+        .section-header { text-align: center; margin-bottom: 45px; }
+        .section-title { font-size: 38px; font-weight: 900; color: var(--text-primary); margin-bottom: 12px; }
+        .section-subtitle { font-size: 18px; color: var(--text-secondary); font-weight: 600; }
+
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-bottom: 90px; }
+        .recipe-card { background: #FFF; border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s ease; border: 2px solid #FFFFFF; text-align: left; display: flex; flex-direction: column; }
+        .recipe-card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px rgba(50, 31, 23, 0.15); }
+        .recipe-img { width: 100%; height: 220px; object-fit: cover; background: #F5EBE0; }
+        .recipe-content { padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .recipe-title { font-size: 22px; font-weight: 900; color: var(--text-primary); margin-bottom: 10px; line-height: 1.3; }
+        .recipe-desc { font-size: 15px; color: var(--text-secondary); font-weight: 600; line-height: 1.5; margin-bottom: 16px; }
+        .recipe-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #F0E6DD; padding-top: 14px; font-size: 14px; font-weight: 800; color: var(--primary); }
+
+        /* Footer */
+        footer { background: #FFF; padding: 50px 8%; text-align: center; border-top: 1px solid #EADCD0; margin-top: 60px; }
+        .footer-brand { font-size: 22px; font-weight: 900; color: var(--text-primary); margin-bottom: 12px; }
+        .footer-copy { font-size: 15px; color: var(--text-secondary); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 42px; }
+            .hero-subtitle { font-size: 18px; }
+            header { padding: 14px 5%; }
+            .hero { padding: 40px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <a href="#" class="brand">
+            <div class="brand-logo">🧊</div>
+            <div class="brand-name">Buzdolabında Ne Var?</div>
+        </a>
+        <div class="nav-buttons">
+            
+            <a href="privacy_policy.html" class="btn btn-primary">📱 Uygulama Detayı</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">✨ Yapay Zeka Destekli Akıllı Mutfak Asistanı</div>
+            <h1 class="hero-title">Dolabındaki Malzemelerle <span>Anında Leziz Tarifler</span> Bul!</h1>
+            <p class="hero-subtitle">Buzdolabında ne olduğunu seç veya kamerasını aç; 777+ tam ölçülü nefis yemek tarifi arasından sana en uygun fikirleri anında listelesin.</p>
+
+            <!-- Search Bar -->
+            <div class="search-box-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Malzeme veya tarif adı yazın (Örn: Yumurta, Kek, Çorba)..." onkeyup="filterRecipes()">
+                <button class="search-btn" onclick="filterRecipes()">🔍 Tarif Ara</button>
+            </div>
+
+            <!-- Quick Ingredient Pills -->
+            <div class="pills-title">Popular Malzemelerle Hızlı Filtrele:</div>
+            <div class="pills-grid">
+                <div class="pill" onclick="togglePill(this, 'Yumurta')">🥚 Yumurta</div>
+                <div class="pill" onclick="togglePill(this, 'Domates')">🍅 Domates</div>
+                <div class="pill" onclick="togglePill(this, 'Un')">🌾 Un</div>
+                <div class="pill" onclick="togglePill(this, 'Kakao')">🍫 Kakao</div>
+                <div class="pill" onclick="togglePill(this, 'Süt')">🥛 Süt</div>
+                <div class="pill" onclick="togglePill(this, 'Patates')">🥔 Patates</div>
+                <div class="pill" onclick="togglePill(this, 'Peynir')">🧀 Peynir</div>
+                <div class="pill" onclick="togglePill(this, 'Tavuk')">🍗 Tavuk</div>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">777+</div>
+                <div class="stat-label">Tam Ölçülü Detaylı Tarif</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">300+</div>
+                <div class="stat-label">Görselli Malzeme Çeşidi</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">%100</div>
+                <div class="stat-label">Ücretsiz & Türkçe</div>
+            </div>
+        </section>
+
+        <!-- Recipe Gallery Section -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">Öne Çıkan Nefis Tariflerimiz</h2>
+                <p class="section-subtitle">Evde kolayca hazırlayabileceğiniz denenmiş ve tam kıvamında lezzetler.</p>
+            </div>
+
+            <div class="recipe-grid" id="recipeGrid">
+                <!-- Recipe Cards will be populated here -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-brand">🧊 Buzdolabında Ne Var?</div>
+        <div class="footer-copy">© 2026 Tüm Hakları Saklıdır. Tüm lezzetler ve akıllı tarifler kullanıcılarımız için ücretsizdir.</div>
+    </footer>
+
+    <script>
+        const sampleRecipes = [
+            { title: "Gerçek Brownie", desc: "Dışı çıtır, içi yumuşacık ve akışkan çikolatalı gerçek pastane brownie'si.", img: "assets/assets/recipes/r_032.webp", tag: "Tatlı" },
+            { title: "Kakaolu Kek", desc: "Kabarık, yumuşacık ve tam kıvamında ev yapımı kakaolu anne keki.", img: "assets/assets/recipes/r_033.webp", tag: "Kek" },
+            { title: "Limonlu Kek", desc: "Ferahlatıcı limon aroması ve nefis kokusuyla çay saatlerinin vazgeçilmezi.", img: "assets/assets/recipes/r_034.webp", tag: "Kek" },
+            { title: "Portakallı Kek", desc: "Mis gibi taze portakal kabuğu rendesiyle harmanlanmış yumuşak kek.", img: "assets/assets/recipes/r_035.webp", tag: "Kek" },
+            { title: "Çikolatalı Süfle", desc: "Fırından yeni çıkmış, ortası akışkan sıcak çikolata lezzeti.", img: "assets/assets/recipes/r_042.webp", tag: "Tatlı" },
+            { title: "Mayalı Poğaça", desc: "Pamuk gibi yumuşacık, puf puf kabaran kahvaltılık poğaça.", img: "assets/assets/recipes/r_051.webp", tag: "Hamur İşi" },
+            { title: "Mozaik Pasta", desc: "Bisküvi ve çikolatanın pratik ve en sevilen pratik buluşması.", img: "assets/assets/recipes/r_041.webp", tag: "Tatlı" },
+            { title: "Kayseri Yağlaması", desc: "Kıymalı nefis harç ve kat kat lavaşıyla damak çatlatan lezzet.", img: "assets/assets/recipes/r_002.webp", tag: "Ana Yemek" }
+        ];
+
+        function renderRecipes(recipes) {
+            const grid = document.getElementById('recipeGrid');
+            grid.innerHTML = '';
+            recipes.forEach(r => {
+                grid.innerHTML += `
+                    <div class="recipe-card">
+                        <img src="${r.img}" class="recipe-img" alt="${r.title}" onerror="this.src='assets/assets/app_logo_kawaii.jpg'">
+                        <div class="recipe-content">
+                            <div>
+                                <h3 class="recipe-title">${r.title}</h3>
+                                <p class="recipe-desc">${r.desc}</p>
+                            </div>
+                            <div class="recipe-footer">
+                                <span>🏷️ ${r.tag}</span>
+                                <span>📖 Tarifi Gör →</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterRecipes() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = sampleRecipes.filter(r => r.title.toLowerCase().includes(query) || r.desc.toLowerCase().includes(query) || r.tag.toLowerCase().includes(query));
+            renderRecipes(filtered);
+        }
+
+        function togglePill(el, val) {
+            el.classList.toggle('selected');
+            document.getElementById('searchInput').value = val;
+            filterRecipes();
+        }
+
+        // Initial render
+        renderRecipes(sampleRecipes);
+    </script>
+</body>
+</html>
